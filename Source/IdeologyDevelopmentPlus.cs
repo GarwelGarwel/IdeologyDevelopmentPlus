@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace IdeologyDevelopmentPlus
@@ -12,7 +13,11 @@ namespace IdeologyDevelopmentPlus
     {
         static Harmony harmony;
 
-        static int DevPointsReformCost = 5;
+        static int points;
+
+        static int DevPointsReformCostBase = 5;
+        static int DevPointsReformCostPerReform = 2;
+        static int DevPointsReformCostMax = 15;
         static int DevPointsPerMeme = 1;
         static int DevPointsPerImpact = 1;
         static int DevPointsPerPrecept = 0;
@@ -30,10 +35,29 @@ namespace IdeologyDevelopmentPlus
             harmony = new Harmony("Garwel.IdeologyDevelopmentPlus");
             Type type = typeof(IdeologyDevelopmentPlus);
 
-            void Patch(string methodToPatch, string prefixName) => harmony.Patch(AccessTools.Method(methodToPatch), new HarmonyMethod(type.GetMethod(prefixName)));
+            void Patch(string methodToPatch, string prefix = null, string postfix = null)
+            {
+                MethodInfo patchInfo = null;
+                try
+                {
+                    patchInfo = harmony.Patch(AccessTools.Method(methodToPatch),
+                        prefix != null ? new HarmonyMethod(type.GetMethod(prefix)) : null,
+                        postfix != null ? new HarmonyMethod(type.GetMethod(postfix)) : null);
+                }
+                catch (Exception ex)
+                { LogUtility.Log($"Exception while patching {methodToPatch}: {ex}"); }
+                if (patchInfo != null)
+                    LogUtility.Log($"{methodToPatch} patched successfully.");
+                else LogUtility.Log($"Error patching {methodToPatch}.", LogLevel.Error);
+            }
 
             Patch("RimWorld.IdeoDevelopmentUtility:ConfirmChangesToIdeo", "IdeoDevelopmentUtility_ConfirmChangesToIdeo_Prefix");
             Patch("RimWorld.IdeoDevelopmentTracker:TryAddDevelopmentPoints", "IdeoDevelopmentTracker_TryAddDevelopmentPoints_Prefix");
+            Patch("RimWorld.IdeoDevelopmentTracker:ResetDevelopmentPoints", "IdeoDevelopmentTracker_ResetDevelopmentPoints");
+            Patch("RimWorld.Dialog_ReformIdeo:DoWindowContents", postfix: "Dialog_ReformIdeo_DoWindowContents_Postfix");
+            harmony.Patch(
+                AccessTools.PropertyGetter(typeof(IdeoDevelopmentTracker), "NextReformationDevelopmentPoints"),
+                new HarmonyMethod(type.GetMethod("IdeoDevelopmentTracker_NextReformationDevelopmentPoints")));
             LogUtility.Log($"Inititalization complete for {Assembly.GetExecutingAssembly()}.");
         }
 
@@ -58,32 +82,54 @@ namespace IdeologyDevelopmentPlus
         public static List<IssueDef> GetChangedIssues(Ideo ideo1, Ideo ideo2) =>
             GetAddedPrecepts(ideo1, ideo2).Union(GetRemovedPrecepts(ideo1, ideo2)).Select(precept => precept.def.issue).Distinct().ToList();
 
-        #region HARMONY PATCHES
+        static int DevPointsReformCost => Math.Min(DevPointsReformCostBase + PlayerIdeo.development.reformCount * DevPointsReformCostPerReform, DevPointsReformCostMax);
 
-        public static bool IdeoDevelopmentUtility_ConfirmChangesToIdeo_Prefix(Ideo ideo, Ideo newIdeo)
+        public static void RecalculatePoints(Ideo ideo, Ideo newIdeo, bool log = true)
         {
-            int points = DevPointsReformCost;
+            points = DevPointsReformCost;
+            log &= Prefs.DevMode;
             IEnumerable<MemeDef> changedMemes = GetAddedMemes(ideo, newIdeo).Union(GetRemovedMemes(ideo, newIdeo));
-            LogUtility.Log($"Added memes: {GetAddedMemes(ideo, newIdeo).Select(meme => $"{meme} (impact {meme.impact})").ToCommaList()}");
-            LogUtility.Log($"Removed memes: {GetRemovedMemes(ideo, newIdeo).Select(meme => $"{meme} (impact {meme.impact})").ToCommaList()}");
+            if (log)
+            {
+                LogUtility.Log($"Added memes: {GetAddedMemes(ideo, newIdeo).Select(meme => $"{meme} (impact {meme.impact})").ToCommaList()}");
+                LogUtility.Log($"Removed memes: {GetRemovedMemes(ideo, newIdeo).Select(meme => $"{meme} (impact {meme.impact})").ToCommaList()}");
+            }
             int points2 = changedMemes.Count() * DevPointsPerMeme;
-            LogUtility.Log($"Dev points for memes (basic): {points}");
+            if (log)
+                LogUtility.Log($"Dev points for memes (basic): {points2}");
             points += points2;
             points2 = changedMemes.Sum(meme => meme.impact * DevPointsPerImpact);
-            LogUtility.Log($"Dev points for memes' impact: {points2}");
+            if (log)
+                LogUtility.Log($"Dev points for memes' impact: {points2}");
             points += points2;
             IEnumerable<Precept> changedPrecepts = GetAddedPrecepts(ideo, newIdeo).Union(GetRemovedPrecepts(ideo, newIdeo));
-            LogUtility.Log($"Added precepts: {GetAddedPrecepts(ideo, newIdeo).Select(precept => precept.def.ToString()).ToCommaList()}");
-            LogUtility.Log($"Removed precepts: {GetRemovedPrecepts(ideo, newIdeo).Select(precept => precept.def.ToString()).ToCommaList()}");
             points2 = changedPrecepts.Count() * DevPointsPerPrecept;
-            LogUtility.Log($"Dev points for precepts: {points2}");
             points += points2;
+            if (log)
+            {
+                LogUtility.Log($"Added precepts: {GetAddedPrecepts(ideo, newIdeo).Select(precept => precept.def.ToString()).ToCommaList()}");
+                LogUtility.Log($"Removed precepts: {GetRemovedPrecepts(ideo, newIdeo).Select(precept => precept.def.ToString()).ToCommaList()}");
+                LogUtility.Log($"Dev points for precepts: {points2}");
+            }
             IEnumerable<IssueDef> changedIssues = GetChangedIssues(ideo, newIdeo);
-            LogUtility.Log($"Affected issues: {changedIssues.Select(issue => issue.defName).ToCommaList()}");
             points2 = changedIssues.Count() * DevPointsPerIssue;
-            LogUtility.Log($"Dev points for issues: {points2}");
             points += points2;
-            LogUtility.Log($"Total dev points required for reform: {points}.");
+            if (log)
+            {
+                LogUtility.Log($"Affected issues: {changedIssues.Select(issue => issue.defName).ToCommaList()}");
+                LogUtility.Log($"Dev points for issues: {points2}");
+                LogUtility.Log($"Total dev points required for reform: {points}");
+            }
+        }
+
+        #region HARMONY PATCHES
+
+        /// <summary>
+        /// Adds a check whether we have enough dev points for reform, when the user clicks Done in the reform dialog
+        /// </summary>
+        public static bool IdeoDevelopmentUtility_ConfirmChangesToIdeo_Prefix(Ideo ideo, Ideo newIdeo)
+        {
+            RecalculatePoints(ideo, newIdeo);
             LogUtility.Log($"Available dev points: {PlayerIdeo.development.points}.");
             if (points > PlayerIdeo.development.points)
             {
@@ -107,6 +153,38 @@ namespace IdeologyDevelopmentPlus
             return false;
         }
 
+        /// <summary>
+        /// Replaces RimWorld.IdeoDevelopmentTracker.ResetDevelopmentPoints to only remove the spent number of dev points
+        /// </summary>
+        public static bool IdeoDevelopmentTracker_ResetDevelopmentPoints(IdeoDevelopmentTracker __instance)
+        {
+            __instance.points -= points;
+            points = 0;
+            return false;
+        }
+
+        /// <summary>
+        /// Replaces IdeoDevelopmentTracker.NextReformationDevelopmentPoints to change dev points requirements
+        /// </summary>
+        public static bool IdeoDevelopmentTracker_NextReformationDevelopmentPoints(IdeoDevelopmentTracker __instance, ref int __result)
+        {
+            __result = DevPointsReformCost;
+            return false;
+        }
+
+        /// <summary>
+        /// Displays current and needed dev points
+        /// </summary>
+        public static void Dialog_ReformIdeo_DoWindowContents_Postfix(Dialog_ReformIdeo __instance, Rect inRect, Ideo ___ideo, Ideo ___newIdeo)
+        {
+            RecalculatePoints(___ideo, ___newIdeo, false);
+            int availablePoints = PlayerIdeo.development.Points;
+            if (availablePoints < points)
+                GUI.color = Color.red;
+            else GUI.color = Color.white;
+            Widgets.Label(new Rect(inRect.x + inRect.width - 100, inRect.y, 100, 40), $"Points: {points} / {availablePoints}");
+        }
+
         #endregion HARMONY PATCHES
 
         #region DEVMODE
@@ -120,8 +198,7 @@ namespace IdeologyDevelopmentPlus
                 LogUtility.Log("Player faction's ideo dev tracker is null!", LogLevel.Error);
                 return;
             }
-            //dev.points += n;
-            PlayerIdeo.development.TryAddDevelopmentPoints(n);
+            PlayerIdeo.development.points += n;
             LogUtility.Log($"{dev.ideo} dev points: {dev.Points} / {dev.NextReformationDevelopmentPoints}");
         }
 
