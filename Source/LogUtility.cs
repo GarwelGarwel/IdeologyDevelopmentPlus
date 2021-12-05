@@ -1,5 +1,4 @@
-﻿using System.Runtime;
-using Verse;
+﻿using Verse;
 
 namespace IdeologyDevelopmentPlus
 {
@@ -10,7 +9,7 @@ namespace IdeologyDevelopmentPlus
         Error
     };
 
-    internal static class LogUtility
+    static class LogUtility
     {
         internal static void Log(string message, LogLevel logLevel = LogLevel.Message)
         {
@@ -18,7 +17,7 @@ namespace IdeologyDevelopmentPlus
             switch (logLevel)
             {
                 case LogLevel.Message:
-                    if (Prefs.LogVerbose)
+                    if (Prefs.DevMode || Prefs.LogVerbose)
                         Verse.Log.Message(message);
                     break;
 
