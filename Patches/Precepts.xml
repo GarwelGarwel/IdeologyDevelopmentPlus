@@ -1313,4 +1313,36 @@
 		</value>
 	</Operation>
 
+	<!-- Ritual -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[issue="Ritual" and @Name!="FuneralBase"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- Funeral is a special case, because it has two PreceptDefs: Funeral and FuneralNoCorpse -->
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="Funeral"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- IdeoRole -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[issue="IdeoRole"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+			</li>
+		</value>
+	</Operation>
+
 </Patch>
