@@ -14,8 +14,8 @@ namespace IdeologyDevelopmentPlus
 
         public static int DevPointsReformCost =>
             Math.Min(
-                IdeologyDevelopmentPlus.DevPointsReformCostBase + PlayerIdeo.development.reformCount * IdeologyDevelopmentPlus.DevPointsReformCostPerReform,
-                IdeologyDevelopmentPlus.DevPointsReformCostMax);
+                Settings.DevPointsReformCostBase + PlayerIdeo.development.reformCount * Settings.DevPointsReformCostPerReform,
+                Settings.DevPointsReformCostMax);
 
         public static int GetDevPointsCost(this Def def) => def.HasModExtension<DevelopmentCosts>() ? def.GetModExtension<DevelopmentCosts>().cost : 0;
 
@@ -65,7 +65,7 @@ namespace IdeologyDevelopmentPlus
             int points2;
             foreach (MemeDef meme in changedMemes)
             {
-                points2 = GetDevPointsCost(meme) * meme.impact * IdeologyDevelopmentPlus.DevPointsPerImpact;
+                points2 = GetDevPointsCost(meme) * meme.impact * Settings.DevPointsPerImpact;
                 if (points2 != 0)
                 {
                     if (log)
@@ -78,7 +78,7 @@ namespace IdeologyDevelopmentPlus
             IEnumerable<IssueDef> changedIssues = GetChangedIssues(ideo, newIdeo);
             foreach (IssueDef issue in changedIssues)
             {
-                points2 = Math.Max(GetPreceptOrderDifference(ideo, newIdeo, issue), 1) * issue.GetDevPointsCost() * IdeologyDevelopmentPlus.DevPointsPerIssue;
+                points2 = Math.Max(GetPreceptOrderDifference(ideo, newIdeo, issue), 1) * issue.GetDevPointsCost() * Settings.DevPointsPerIssue;
                 if (points2 != 0)
                 {
                     if (log)
@@ -90,7 +90,7 @@ namespace IdeologyDevelopmentPlus
 
             foreach (Precept precept in GetAddedPrecepts(ideo, newIdeo))
             {
-                points2 = GetDevPointsCost(precept.def) * IdeologyDevelopmentPlus.DevPointsPerPrecept;
+                points2 = GetDevPointsCost(precept.def) * Settings.DevPointsPerPrecept;
                 if (points2 != 0)
                 {
                     if (log)
@@ -102,7 +102,7 @@ namespace IdeologyDevelopmentPlus
 
             foreach (Precept precept in GetRemovedPrecepts(ideo, newIdeo))
             {
-                points2 = -GetDevPointsCost(precept.def) * IdeologyDevelopmentPlus.DevPointsPerPrecept;
+                points2 = -GetDevPointsCost(precept.def) * Settings.DevPointsPerPrecept;
                 if (points2 != 0)
                 {
                     if (log)

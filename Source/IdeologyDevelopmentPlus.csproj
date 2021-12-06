@@ -59,9 +59,11 @@
   <ItemGroup>
     <Compile Include="DevelopmentCosts.cs" />
     <Compile Include="IdeologyDevelopmentPlus.cs" />
+    <Compile Include="IdeologyDevelopmentPlusMod.cs" />
     <Compile Include="IdeoUtility.cs" />
     <Compile Include="LogUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -14,15 +14,6 @@ namespace IdeologyDevelopmentPlus
         static int points;
         static string explanation = "";
 
-        public static int DevPointsMultiplier = 2;
-
-        public static int DevPointsReformCostBase = 10;
-        public static int DevPointsReformCostPerReform = 2;
-        public static int DevPointsReformCostMax = 20;
-        public static int DevPointsPerImpact = 2;
-        public static int DevPointsPerPrecept = 2;
-        public static int DevPointsPerIssue = 1;
-
         public IdeologyDevelopmentPlus(Game game)
         {
             Harmony.DEBUG = Prefs.DevMode;
@@ -44,9 +35,8 @@ namespace IdeologyDevelopmentPlus
                 }
                 catch (Exception ex)
                 { LogUtility.Log($"Exception while patching {methodToPatch}: {ex}"); }
-                if (patchInfo != null)
-                    LogUtility.Log($"{methodToPatch} patched successfully.");
-                else LogUtility.Log($"Error patching {methodToPatch}.", LogLevel.Error);
+                if (patchInfo == null)
+                    LogUtility.Log($"Error patching {methodToPatch}.", LogLevel.Error);
             }
 
             Patch("RimWorld.IdeoDevelopmentUtility:ConfirmChangesToIdeo", "IdeoDevelopmentUtility_ConfirmChangesToIdeo");
@@ -74,7 +64,7 @@ namespace IdeologyDevelopmentPlus
                     title: "Ideology Development+"));
         }
 
-        static void MakeIdeoFluid() => IdeoUtility.PlayerIdeo.Fluid = true;
+        public static void MakeIdeoFluid() => IdeoUtility.PlayerIdeo.Fluid = true;
 
         #region HARMONY PATCHES
 
@@ -100,7 +90,7 @@ namespace IdeologyDevelopmentPlus
         {
             LogUtility.Log($"IdeoDevelopmentTracker_TryAddDevelopmentPoints({__instance.ideo}, {pointsToAdd})");
             bool canReformNow = __instance.CanReformNow;
-            __instance.points += pointsToAdd * DevPointsMultiplier;
+            __instance.points += pointsToAdd * Settings.DevPointsMultiplier;
             if (!canReformNow && __instance.CanReformNow)
                 Find.LetterStack.ReceiveLetter("LetterLabelReformIdeo".Translate(), "LetterTextReformIdeo".Translate(__instance.ideo), LetterDefOf.PositiveEvent);
             __result = true;
