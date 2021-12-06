@@ -1,0 +1,21 @@
+<Patch>
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>Defs/IssueDef</xpath>
+        <value>
+            <li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+            </li>
+        </value>
+    </Operation>
+
+    <Operation Class="PatchOperationReplace">
+        <xpath>Defs/IssueDef[defName="AnimalSlaughter"]/modExtensions/li[@Class="IdeologyDevelopmentPlus.DevelopmentCosts"]</xpath>
+        <value>
+            <li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>0</cost>
+            </li>
+        </value>
+    </Operation>
+
+</Patch>
