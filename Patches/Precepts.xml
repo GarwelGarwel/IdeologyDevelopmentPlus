@@ -960,7 +960,7 @@
 		<xpath>Defs/PreceptDef[defName="Execution_Required"]</xpath>
 		<value>
 			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
-				<cost>3</cost>
+				<cost>1</cost>
 				<order>-3</order>
 			</li>
 		</value>
@@ -1118,6 +1118,197 @@
 		<value>
 			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
 				<order>1</order>
+			</li>
+		</value>
+	</Operation>
+	
+	<!-- Skullspike -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="Research_Fast"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+				<order>1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- Slavery -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="Slavery_Abhorrent"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-2</cost>
+				<order>1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="Slavery_Disapproved"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-1</cost>
+				<order>2</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="Slavery_Acceptable"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<order>3</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="Slavery_Honorable"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<order>4</order>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- SmallSpaces -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="SmallSpaces_Acceptable"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>2</cost>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- SpouseCount -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="SpouseCount_Male_MaxTwo"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<order>1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="SpouseCount_Female_MaxTwo"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<order>1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="SpouseCount_Male_MaxThree"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<order>2</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="SpouseCount_Female_MaxThree"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<order>2</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="SpouseCount_Male_MaxFour"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<order>3</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="SpouseCount_Female_MaxFour"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<order>3</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="SpouseCount_Male_Unlimited"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<order>4</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="SpouseCount_Female_Unlimited"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<order>4</order>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- Temperature -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="Temperature_Tough"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>2</cost>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- TreeCutting -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="TreeCutting_Prohibited"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-3</cost>
+				<order>3</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="TreeCutting_Horrible"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-2</cost>
+				<order>2</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="TreeCutting_Disapproved"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-1</cost>
+				<order>1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- WorkDrive -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="WorkDrive_Tripled"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>2</cost>
 			</li>
 		</value>
 	</Operation>

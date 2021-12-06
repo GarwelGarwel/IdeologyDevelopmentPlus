@@ -38,6 +38,8 @@ namespace IdeologyDevelopmentPlus
         public static IEnumerable<PreceptDef> GetPreceptsForIssue(this Ideo ideo, IssueDef issue) =>
             ideo.PreceptsListForReading.Select(precept => precept.def).Where(def => def.issue == issue);
 
+        public static string GetFullName(this Precept precept) => $"{precept.LabelCap}: {precept.def.LabelCap}";
+
         static int GetPreceptOrderDifference(Ideo ideo1, Ideo ideo2, IssueDef issue)
         {
             PreceptDef precept1 = ideo1.GetPreceptsForIssue(issue).FirstOrDefault();
@@ -51,43 +53,85 @@ namespace IdeologyDevelopmentPlus
             return Math.Abs(precept1.GetPreceptOrder() - precept2.GetPreceptOrder());
         }
 
-        public static int GetPoints(Ideo ideo, Ideo newIdeo, bool log = true)
+        public static int GetPoints(Ideo ideo, Ideo newIdeo, out string explanation, bool log = true)
         {
             int Sqr(int x) => x * x;
 
             log &= Prefs.DevMode;
             int points = DevPointsReformCost;
+            explanation = $"Base: {points}\n";
             IEnumerable<MemeDef> changedMemes = GetAddedMemes(ideo, newIdeo).Union(GetRemovedMemes(ideo, newIdeo));
             if (log)
             {
                 LogUtility.Log($"Added memes: {GetAddedMemes(ideo, newIdeo).Select(meme => $"{meme} (impact {meme.impact})").ToCommaList()}");
                 LogUtility.Log($"Removed memes: {GetRemovedMemes(ideo, newIdeo).Select(meme => $"{meme} (impact {meme.impact})").ToCommaList()}");
             }
-            int points2 = changedMemes.Sum(meme => GetDevPointsCost(meme) * meme.impact) * IdeologyDevelopmentPlus.DevPointsPerImpact;
-            points += points2;
-            if (log)
-                LogUtility.Log($"Dev points for memes: {points2}");
-            points2 = GetAddedPrecepts(ideo, newIdeo).Sum(precept => GetDevPointsCost(precept.def)) * IdeologyDevelopmentPlus.DevPointsPerPrecept;
-            points += points2;
-            if (log)
+            int points2;
+            foreach (MemeDef meme in changedMemes)
             {
-                LogUtility.Log($"Added precepts: {GetAddedPrecepts(ideo, newIdeo).Select(precept => precept.def.ToString()).ToCommaList()}");
-                LogUtility.Log($"Dev points for adding precepts: {points2}");
+                points2 = GetDevPointsCost(meme) * meme.impact * IdeologyDevelopmentPlus.DevPointsPerImpact;
+                if (points2 != 0)
+                {
+                    if (log)
+                        LogUtility.Log($"Meme {meme} (impact {meme.impact}): {points2}");
+                    points += points2;
+                    explanation += $"{meme.LabelCap}: {points2}\n";
+                }
+            }
+            //points2 = changedMemes.Sum(meme => GetDevPointsCost(meme) * meme.impact) * IdeologyDevelopmentPlus.DevPointsPerImpact;
+            //points += points2;
+            //if (log)
+            //    LogUtility.Log($"Dev points for memes: {points2}");
+
+            IEnumerable<IssueDef> changedIssues = GetChangedIssues(ideo, newIdeo);
+            foreach (IssueDef issue in changedIssues)
+            {
+                points2 = Math.Max(GetPreceptOrderDifference(ideo, newIdeo, issue), 1) * issue.GetDevPointsCost() * IdeologyDevelopmentPlus.DevPointsPerIssue;
+                if (points2 != 0)
+                {
+                    if (log)
+                        LogUtility.Log($"Issue {issue}: {points2}");
+                    points += points2;
+                    explanation += $"{issue.LabelCap}: {points2}\n";
+                }
+            }
+
+            foreach (Precept precept in GetAddedPrecepts(ideo, newIdeo))
+            {
+                points2 = GetDevPointsCost(precept.def) * IdeologyDevelopmentPlus.DevPointsPerPrecept;
+                if (points2 != 0)
+                {
+                    if (log)
+                        LogUtility.Log($"Precept {precept.def} added: {points2}");
+                    points += points2;
+                    explanation += $"{precept.GetFullName()} added: {points2}\n";
+                }
+            }
+            //points += points2;
+            //if (log)
+            //    LogUtility.Log($"Added precepts: {GetAddedPrecepts(ideo, newIdeo).Select(precept => precept.def.ToString()).ToCommaList()}");
+
+            foreach (Precept precept in GetRemovedPrecepts(ideo, newIdeo))
+            {
+                points2 = -GetDevPointsCost(precept.def) * IdeologyDevelopmentPlus.DevPointsPerPrecept;
+                if (points2 != 0)
+                {
+                    if (log)
+                        LogUtility.Log($"Precept {precept.def} removed: {points2}");
+                    points += points2;
+                    explanation += $"{precept.GetFullName()} removed: {points2}\n";
+                }
             }
             points2 = -GetRemovedPrecepts(ideo, newIdeo).Sum(precept => GetDevPointsCost(precept.def)) * IdeologyDevelopmentPlus.DevPointsPerPrecept;
-            points += points2;
+            //points += points2;
+            //if (log)
+            //{
+            //    LogUtility.Log($"Removed precepts: {GetRemovedPrecepts(ideo, newIdeo).Select(precept => precept.def.ToString()).ToCommaList()}");
+            //    LogUtility.Log($"Dev points for removing precepts: {points2}");
+            //}
             if (log)
             {
-                LogUtility.Log($"Removed precepts: {GetRemovedPrecepts(ideo, newIdeo).Select(precept => precept.def.ToString()).ToCommaList()}");
-                LogUtility.Log($"Dev points for removing precepts: {points2}");
-            }
-            IEnumerable<IssueDef> changedIssues = GetChangedIssues(ideo, newIdeo);
-            points2 = changedIssues.Sum(issue => Math.Max(Sqr(GetPreceptOrderDifference(ideo, newIdeo, issue)), 1) * issue.GetDevPointsCost()) * IdeologyDevelopmentPlus.DevPointsPerIssue;
-            points += points2;
-            if (log)
-            {
-                LogUtility.Log($"Affected issues: {changedIssues.Select(issue => issue.defName).ToCommaList()}");
-                LogUtility.Log($"Dev points for issues: {points2}");
+                //LogUtility.Log($"Affected issues: {changedIssues.Select(issue => issue.defName).ToCommaList()}");
                 LogUtility.Log($"Total dev points required for reform: {points}");
             }
             return points;

@@ -14,6 +14,7 @@ namespace IdeologyDevelopmentPlus
         static Harmony harmony;
 
         static int points;
+        static string explanation = "";
 
         public static int DevPointsMultiplier = 2;
 
@@ -21,8 +22,8 @@ namespace IdeologyDevelopmentPlus
         public static int DevPointsReformCostPerReform = 2;
         public static int DevPointsReformCostMax = 20;
         public static int DevPointsPerImpact = 2;
-        public static int DevPointsPerPrecept = 1;
-        public static int DevPointsPerIssue = 2;
+        public static int DevPointsPerPrecept = 2;
+        public static int DevPointsPerIssue = 1;
 
         public IdeologyDevelopmentPlus(Game game)
         {
@@ -70,7 +71,6 @@ namespace IdeologyDevelopmentPlus
             }
         }
 
-
         #region HARMONY PATCHES
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace IdeologyDevelopmentPlus
         /// </summary>
         public static bool IdeoDevelopmentUtility_ConfirmChangesToIdeo_Prefix(Ideo ideo, Ideo newIdeo)
         {
-            points = IdeoUtility.GetPoints(ideo, newIdeo);
+            points = IdeoUtility.GetPoints(ideo, newIdeo, out explanation);
             LogUtility.Log($"Available dev points: {IdeoUtility.PlayerIdeo.development.points}.");
             if (points > IdeoUtility.PlayerIdeoDevelopment.points)
             {
@@ -126,12 +126,13 @@ namespace IdeologyDevelopmentPlus
         /// </summary>
         public static void Dialog_ReformIdeo_DoWindowContents_Postfix(Dialog_ReformIdeo __instance, Rect inRect, Ideo ___ideo, Ideo ___newIdeo)
         {
-            points = IdeoUtility.GetPoints(___ideo, ___newIdeo, false);
+            points = IdeoUtility.GetPoints(___ideo, ___newIdeo, out explanation, false);
             int availablePoints = IdeoUtility.PlayerIdeoDevelopment.Points;
             if (availablePoints < points)
                 GUI.color = Color.red;
             else GUI.color = Color.white;
-            Widgets.Label(new Rect(inRect.x + inRect.width - 100, inRect.y, 100, 40), $"Points: {points} / {availablePoints}");
+            float y = inRect.y;
+            Widgets.Label(inRect.x + inRect.width - 100, ref y, 100, $"Points: {points} / {availablePoints}", explanation);
         }
 
         #endregion HARMONY PATCHES
