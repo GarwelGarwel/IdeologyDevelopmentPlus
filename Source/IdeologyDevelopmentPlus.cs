@@ -51,10 +51,10 @@ namespace IdeologyDevelopmentPlus
                 else LogUtility.Log($"Error patching {methodToPatch}.", LogLevel.Error);
             }
 
-            Patch("RimWorld.IdeoDevelopmentUtility:ConfirmChangesToIdeo", "IdeoDevelopmentUtility_ConfirmChangesToIdeo_Prefix");
-            Patch("RimWorld.IdeoDevelopmentTracker:TryAddDevelopmentPoints", "IdeoDevelopmentTracker_TryAddDevelopmentPoints_Prefix");
+            Patch("RimWorld.IdeoDevelopmentUtility:ConfirmChangesToIdeo", "IdeoDevelopmentUtility_ConfirmChangesToIdeo");
+            Patch("RimWorld.IdeoDevelopmentTracker:TryAddDevelopmentPoints", "IdeoDevelopmentTracker_TryAddDevelopmentPoints");
             Patch("RimWorld.IdeoDevelopmentTracker:ResetDevelopmentPoints", "IdeoDevelopmentTracker_ResetDevelopmentPoints");
-            Patch("RimWorld.Dialog_ReformIdeo:DoWindowContents", postfix: "Dialog_ReformIdeo_DoWindowContents_Postfix");
+            Patch("RimWorld.Dialog_ReformIdeo:DoWindowContents", postfix: "Dialog_ReformIdeo_DoWindowContents");
             harmony.Patch(
                 AccessTools.PropertyGetter(typeof(IdeoDevelopmentTracker), "NextReformationDevelopmentPoints"),
                 new HarmonyMethod(type.GetMethod("IdeoDevelopmentTracker_NextReformationDevelopmentPoints")));
@@ -76,10 +76,10 @@ namespace IdeologyDevelopmentPlus
         /// <summary>
         /// Adds a check whether we have enough dev points for reform, when the user clicks Done in the reform dialog
         /// </summary>
-        public static bool IdeoDevelopmentUtility_ConfirmChangesToIdeo_Prefix(Ideo ideo, Ideo newIdeo)
+        public static bool IdeoDevelopmentUtility_ConfirmChangesToIdeo(Ideo ideo, Ideo newIdeo)
         {
             points = IdeoUtility.GetPoints(ideo, newIdeo, out explanation);
-            LogUtility.Log($"Available dev points: {IdeoUtility.PlayerIdeo.development.points}.");
+            LogUtility.Log($"Available dev points: {IdeoUtility.PlayerIdeoDevelopment.points}.");
             if (points > IdeoUtility.PlayerIdeoDevelopment.points)
             {
                 Messages.Message($"Can't reform ideoligion: {points} development points needed.", MessageTypeDefOf.RejectInput, false);
@@ -91,9 +91,9 @@ namespace IdeologyDevelopmentPlus
         /// <summary>
         /// Replaces RimWorld.IdeoDevelopmentTracker.TryAddDevelopmentPoints so that dev points aren't capped by the amount needed for development
         /// </summary>
-        public static bool IdeoDevelopmentTracker_TryAddDevelopmentPoints_Prefix(IdeoDevelopmentTracker __instance, ref bool __result, int pointsToAdd)
+        public static bool IdeoDevelopmentTracker_TryAddDevelopmentPoints(IdeoDevelopmentTracker __instance, ref bool __result, int pointsToAdd)
         {
-            LogUtility.Log($"IdeoDevelopmentTracker_TryAddDevelopmentPoints_Prefix({__instance.ideo}, {pointsToAdd})");
+            LogUtility.Log($"IdeoDevelopmentTracker_TryAddDevelopmentPoints({__instance.ideo}, {pointsToAdd})");
             bool canReformNow = __instance.CanReformNow;
             __instance.points += pointsToAdd * DevPointsMultiplier;
             if (!canReformNow && __instance.CanReformNow)
@@ -107,6 +107,7 @@ namespace IdeologyDevelopmentPlus
         /// </summary>
         public static bool IdeoDevelopmentTracker_ResetDevelopmentPoints(IdeoDevelopmentTracker __instance)
         {
+            LogUtility.Log($"IdeoDevelopmentTracker_ResetDevelopmentPoints({__instance.ideo})");
             __instance.points -= points;
             points = 0;
             return false;
@@ -124,7 +125,7 @@ namespace IdeologyDevelopmentPlus
         /// <summary>
         /// Displays current and needed dev points
         /// </summary>
-        public static void Dialog_ReformIdeo_DoWindowContents_Postfix(Dialog_ReformIdeo __instance, Rect inRect, Ideo ___ideo, Ideo ___newIdeo)
+        public static void Dialog_ReformIdeo_DoWindowContents(Dialog_ReformIdeo __instance, Rect inRect, Ideo ___ideo, Ideo ___newIdeo)
         {
             points = IdeoUtility.GetPoints(___ideo, ___newIdeo, out explanation, false);
             int availablePoints = IdeoUtility.PlayerIdeoDevelopment.Points;
@@ -133,6 +134,12 @@ namespace IdeologyDevelopmentPlus
             else GUI.color = Color.white;
             float y = inRect.y;
             Widgets.Label(inRect.x + inRect.width - 100, ref y, 100, $"Points: {points} / {availablePoints}", explanation);
+            GUI.color = Color.white; 
+            if (Widgets.ButtonText(new Rect(inRect.x + inRect.width - 100, y, 100, 40), "Reset"))
+            {
+                LogUtility.Log($"Resetting the ideo.");
+                ___ideo.CopyTo(___newIdeo);
+            }
         }
 
         #endregion HARMONY PATCHES
