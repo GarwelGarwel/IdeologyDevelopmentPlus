@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using RimWorld;
@@ -58,18 +56,25 @@ namespace IdeologyDevelopmentPlus
             harmony.Patch(
                 AccessTools.PropertyGetter(typeof(IdeoDevelopmentTracker), "NextReformationDevelopmentPoints"),
                 new HarmonyMethod(type.GetMethod("IdeoDevelopmentTracker_NextReformationDevelopmentPoints")));
-            LogUtility.Log($"Inititalization complete for {Assembly.GetExecutingAssembly()}.");
+            LogUtility.Log($"Inititalization complete.");
         }
 
-        static void MakePlayerIdeoFluid()
+        public override void FinalizeInit()
         {
             Ideo ideo = IdeoUtility.PlayerIdeo;
             if (ideo != null && !ideo.Fluid)
-            {
-                LogUtility.Log($"Making player's ideo {ideo} fluid.");
-                ideo.Fluid = true;
-            }
+                if (Prefs.DevMode)
+                    MakeIdeoFluid();
+                else Find.WindowStack.Add(new Dialog_MessageBox(
+                    $"Do you want to make {ideo.name.Colorize(ideo.TextColor)} ideoligion fluid to allow its development?",
+                    "OK".Translate(),
+                    MakeIdeoFluid,
+                    "Cancel".Translate(),
+                    acceptAction: MakeIdeoFluid,
+                    title: "Ideology Development+"));
         }
+
+        static void MakeIdeoFluid() => IdeoUtility.PlayerIdeo.Fluid = true;
 
         #region HARMONY PATCHES
 
@@ -80,7 +85,7 @@ namespace IdeologyDevelopmentPlus
         {
             points = IdeoUtility.GetPoints(ideo, newIdeo, out explanation);
             LogUtility.Log($"Available dev points: {IdeoUtility.PlayerIdeoDevelopment.points}.");
-            if (points > IdeoUtility.PlayerIdeoDevelopment.points)
+            if (IdeoUtility.PlayerIdeoDevelopment.points < points)
             {
                 Messages.Message($"Can't reform ideoligion: {points} development points needed.", MessageTypeDefOf.RejectInput, false);
                 return false;
@@ -143,28 +148,5 @@ namespace IdeologyDevelopmentPlus
         }
 
         #endregion HARMONY PATCHES
-
-        #region DEVMODE
-
-        public static void AddIdeoDevPoints(int n)
-        {
-            MakePlayerIdeoFluid();
-            IdeoDevelopmentTracker dev = IdeoUtility.PlayerIdeoDevelopment;
-            if (dev == null)
-            {
-                LogUtility.Log("Player faction's ideo dev tracker is null!", LogLevel.Error);
-                return;
-            }
-            IdeoUtility.PlayerIdeoDevelopment.points += n;
-            LogUtility.Log($"{dev.ideo} dev points: {dev.Points} / {dev.NextReformationDevelopmentPoints}");
-        }
-
-        [DebugAction(name = "Add 1 Ideo Dev Point", requiresIdeology = true)]
-        public static void AddIdeoDevPoint() => AddIdeoDevPoints(1);
-
-        [DebugAction(name = "Add 10 Ideo Dev Points", requiresIdeology = true)]
-        public static void Add10IdeoDevPoints() => AddIdeoDevPoints(10);
-
-        #endregion DEVMODE
     }
 }

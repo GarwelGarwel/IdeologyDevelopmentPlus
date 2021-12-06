@@ -2,9 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
 namespace IdeologyDevelopmentPlus
@@ -35,15 +32,13 @@ namespace IdeologyDevelopmentPlus
         public static List<IssueDef> GetChangedIssues(Ideo ideo1, Ideo ideo2) =>
             GetAddedPrecepts(ideo1, ideo2).Union(GetRemovedPrecepts(ideo1, ideo2)).Select(precept => precept.def.issue).Distinct().ToList();
 
-        public static IEnumerable<PreceptDef> GetPreceptsForIssue(this Ideo ideo, IssueDef issue) =>
-            ideo.PreceptsListForReading.Select(precept => precept.def).Where(def => def.issue == issue);
+        public static PreceptDef GetPreceptForIssue(this Ideo ideo, IssueDef issue) =>
+            ideo.PreceptsListForReading.Select(precept => precept.def).FirstOrDefault(def => def.issue == issue);
 
-        public static string GetFullName(this Precept precept) => $"{precept.LabelCap}: {precept.def.LabelCap}";
-
-        static int GetPreceptOrderDifference(Ideo ideo1, Ideo ideo2, IssueDef issue)
+        public static int GetPreceptOrderDifference(Ideo ideo1, Ideo ideo2, IssueDef issue)
         {
-            PreceptDef precept1 = ideo1.GetPreceptsForIssue(issue).FirstOrDefault();
-            PreceptDef precept2 = ideo2.GetPreceptsForIssue(issue).FirstOrDefault();
+            PreceptDef precept1 = ideo1.GetPreceptForIssue(issue);
+            PreceptDef precept2 = ideo2.GetPreceptForIssue(issue);
             if (precept1 == null && precept2 == null)
                 return 0;
             if (precept1 == null)
@@ -53,13 +48,14 @@ namespace IdeologyDevelopmentPlus
             return Math.Abs(precept1.GetPreceptOrder() - precept2.GetPreceptOrder());
         }
 
+        public static string GetFullName(this Precept precept) => $"{precept.LabelCap}: {precept.def.LabelCap}";
+
         public static int GetPoints(Ideo ideo, Ideo newIdeo, out string explanation, bool log = true)
         {
-            int Sqr(int x) => x * x;
-
             log &= Prefs.DevMode;
             int points = DevPointsReformCost;
-            explanation = $"Base: {points}\n";
+            explanation = $"Base: {points}";
+
             IEnumerable<MemeDef> changedMemes = GetAddedMemes(ideo, newIdeo).Union(GetRemovedMemes(ideo, newIdeo));
             if (log)
             {
@@ -75,13 +71,9 @@ namespace IdeologyDevelopmentPlus
                     if (log)
                         LogUtility.Log($"Meme {meme} (impact {meme.impact}): {points2}");
                     points += points2;
-                    explanation += $"{meme.LabelCap}: {points2}\n";
+                    explanation += $"\n{meme.LabelCap}: {points2}";
                 }
             }
-            //points2 = changedMemes.Sum(meme => GetDevPointsCost(meme) * meme.impact) * IdeologyDevelopmentPlus.DevPointsPerImpact;
-            //points += points2;
-            //if (log)
-            //    LogUtility.Log($"Dev points for memes: {points2}");
 
             IEnumerable<IssueDef> changedIssues = GetChangedIssues(ideo, newIdeo);
             foreach (IssueDef issue in changedIssues)
@@ -92,7 +84,7 @@ namespace IdeologyDevelopmentPlus
                     if (log)
                         LogUtility.Log($"Issue {issue}: {points2}");
                     points += points2;
-                    explanation += $"{issue.LabelCap}: {points2}\n";
+                    explanation += $"\n{issue.LabelCap}: {points2}";
                 }
             }
 
@@ -104,12 +96,9 @@ namespace IdeologyDevelopmentPlus
                     if (log)
                         LogUtility.Log($"Precept {precept.def} added: {points2}");
                     points += points2;
-                    explanation += $"{precept.GetFullName()} added: {points2}\n";
+                    explanation += $"\n{precept.GetFullName()} added: {points2}";
                 }
             }
-            //points += points2;
-            //if (log)
-            //    LogUtility.Log($"Added precepts: {GetAddedPrecepts(ideo, newIdeo).Select(precept => precept.def.ToString()).ToCommaList()}");
 
             foreach (Precept precept in GetRemovedPrecepts(ideo, newIdeo))
             {
@@ -119,21 +108,12 @@ namespace IdeologyDevelopmentPlus
                     if (log)
                         LogUtility.Log($"Precept {precept.def} removed: {points2}");
                     points += points2;
-                    explanation += $"{precept.GetFullName()} removed: {points2}\n";
+                    explanation += $"\n{precept.GetFullName()} removed: {points2}";
                 }
             }
-            points2 = -GetRemovedPrecepts(ideo, newIdeo).Sum(precept => GetDevPointsCost(precept.def)) * IdeologyDevelopmentPlus.DevPointsPerPrecept;
-            //points += points2;
-            //if (log)
-            //{
-            //    LogUtility.Log($"Removed precepts: {GetRemovedPrecepts(ideo, newIdeo).Select(precept => precept.def.ToString()).ToCommaList()}");
-            //    LogUtility.Log($"Dev points for removing precepts: {points2}");
-            //}
+
             if (log)
-            {
-                //LogUtility.Log($"Affected issues: {changedIssues.Select(issue => issue.defName).ToCommaList()}");
                 LogUtility.Log($"Total dev points required for reform: {points}");
-            }
             return points;
         }
     }
