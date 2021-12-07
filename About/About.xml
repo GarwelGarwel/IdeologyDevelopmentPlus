@@ -8,29 +8,29 @@
 	<supportedVersions>
 		<li>1.3</li>
 	</supportedVersions>
-	<description>Ideology Development+ overhauls development of fluid ideoligions.
-	
-	Features:
-	
-	- Acquisition of development points is doubled (by default), so you can start reforming your ideoligion earlier (but there's a caveat: see below)
-	
-	- Dev point cap is removed (i.e. you can accumulate as many dev points as you want)
-	
-	- Adding or removing most memes and precepts costs dev points
-	
-	- Cost of adding or removing memes scales with their impact
-	
-	- Some precepts cost more or less dev points than the others (e.g. faster vs slower research speeds)
-	
-	- For spectrum-like precepts (e.g. Cannibalism attitude), switching between nearby options costs less than jumping between opposites
-	
-	- Most values can be tweaked to your liking
-	
-	Obviously, Ideology DLC is required. So is Harmony.
-	
-	Should be compatible with most mods except those that also change the ideo development. May need additional patches for better balancing custom precepts.
-	
-	Let me know if you think the balance is off somewhere.</description>
+	<description>Ideology Development+ overhauls reforming of fluid ideoligions.
+
+Features:
+
+- Acquisition of development points is doubled (by default), so you can start reforming your ideoligion earlier (but there's a caveat: see below)
+
+- Dev point cap is removed (i.e. you can accumulate as many dev points as you want)
+
+- Adding or removing most memes and precepts costs dev points
+
+- Cost of adding or removing memes scales with their impact
+
+- Some precepts cost more or less dev points than the others (e.g. faster vs slower research speeds)
+
+- For spectrum-like precepts (e.g. number of spouses), switching between nearby options costs less than jumping between opposites
+
+- Most values can be tweaked to your liking
+
+Obviously, Ideology DLC is required. So is Harmony.
+
+Should be compatible with most mods except those that also change the ideo development. May need additional patches for better balancing custom precepts.
+
+Let me know if you think the balance is off somewhere.</description>
 	<modDependencies>
 		<li>
 			<packageId>Ludeon.RimWorld.Ideology</packageId>
