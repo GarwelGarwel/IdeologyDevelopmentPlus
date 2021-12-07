@@ -10,12 +10,14 @@ namespace IdeologyDevelopmentPlus
     {
         public static Ideo PlayerIdeo => Faction.OfPlayer?.ideos?.PrimaryIdeo;
 
-        public static IdeoDevelopmentTracker PlayerIdeoDevelopment => PlayerIdeo?.development;
+        public static int PlayerIdeoPoints => PlayerIdeo.development.Points;
 
-        public static int DevPointsReformCost =>
+        public static void MakeIdeoFluid() => PlayerIdeo.Fluid = true;
+
+        public static int BaseReformCost =>
             Math.Min(
-                Settings.DevPointsReformCostBase + PlayerIdeo.development.reformCount * Settings.DevPointsReformCostPerReform,
-                Settings.DevPointsReformCostMax);
+                Settings.ReformCostStart + PlayerIdeo.development.reformCount * Settings.ReformCostIncrement,
+                Settings.ReformCostMax);
 
         public static int GetDevPointsCost(this Def def) => def.HasModExtension<DevelopmentCosts>() ? def.GetModExtension<DevelopmentCosts>().cost : 0;
 
@@ -42,9 +44,9 @@ namespace IdeologyDevelopmentPlus
             if (precept1 == null && precept2 == null)
                 return 0;
             if (precept1 == null)
-                return precept2.GetPreceptOrder();
+                return Math.Abs(precept2.GetPreceptOrder());
             if (precept2 == null)
-                return precept1.GetPreceptOrder();
+                return Math.Abs(precept1.GetPreceptOrder());
             return Math.Abs(precept1.GetPreceptOrder() - precept2.GetPreceptOrder());
         }
 
@@ -53,67 +55,67 @@ namespace IdeologyDevelopmentPlus
         public static int GetPoints(Ideo ideo, Ideo newIdeo, out string explanation, bool log = true)
         {
             log &= Prefs.DevMode;
-            int points = DevPointsReformCost;
-            explanation = $"Base: {points}";
+            int points = BaseReformCost;
+            int points2;
+            explanation = $"Base: {points.ToStringCached()}";
 
             IEnumerable<MemeDef> changedMemes = GetAddedMemes(ideo, newIdeo).Union(GetRemovedMemes(ideo, newIdeo));
             if (log)
             {
-                LogUtility.Log($"Added memes: {GetAddedMemes(ideo, newIdeo).Select(meme => $"{meme} (impact {meme.impact})").ToCommaList()}");
-                LogUtility.Log($"Removed memes: {GetRemovedMemes(ideo, newIdeo).Select(meme => $"{meme} (impact {meme.impact})").ToCommaList()}");
+                LogUtility.Log($"Added memes: {GetAddedMemes(ideo, newIdeo).Select(meme => $"{meme} (impact {meme.impact.ToStringCached()})").ToCommaList()}");
+                LogUtility.Log($"Removed memes: {GetRemovedMemes(ideo, newIdeo).Select(meme => $"{meme} (impact {meme.impact.ToStringCached()})").ToCommaList()}");
             }
-            int points2;
             foreach (MemeDef meme in changedMemes)
             {
-                points2 = GetDevPointsCost(meme) * meme.impact * Settings.DevPointsPerImpact;
+                points2 = meme.GetDevPointsCost() * meme.impact * Settings.MemeCostPerImpact;
                 if (points2 != 0)
                 {
                     if (log)
-                        LogUtility.Log($"Meme {meme} (impact {meme.impact}): {points2}");
+                        LogUtility.Log($"Meme {meme} (impact {meme.impact.ToStringCached()}): {points2}");
                     points += points2;
-                    explanation += $"\n{meme.LabelCap}: {points2}";
+                    explanation += $"\n{meme.LabelCap}: {points2.ToStringCached()}";
                 }
             }
 
             IEnumerable<IssueDef> changedIssues = GetChangedIssues(ideo, newIdeo);
             foreach (IssueDef issue in changedIssues)
             {
-                points2 = Math.Max(GetPreceptOrderDifference(ideo, newIdeo, issue), 1) * issue.GetDevPointsCost() * Settings.DevPointsPerIssue;
+                points2 = Math.Max(GetPreceptOrderDifference(ideo, newIdeo, issue), 1) * issue.GetDevPointsCost() * Settings.IssueCost;
                 if (points2 != 0)
                 {
                     if (log)
-                        LogUtility.Log($"Issue {issue}: {points2}");
+                        LogUtility.Log($"Issue {issue}: {points2.ToStringCached()}");
                     points += points2;
-                    explanation += $"\n{issue.LabelCap}: {points2}";
+                    explanation += $"\n{issue.LabelCap}: {points2.ToStringCached()}";
                 }
             }
 
             foreach (Precept precept in GetAddedPrecepts(ideo, newIdeo))
             {
-                points2 = GetDevPointsCost(precept.def) * Settings.DevPointsPerPrecept;
+                points2 = precept.def.GetDevPointsCost() * Settings.PreceptCost;
                 if (points2 != 0)
                 {
                     if (log)
-                        LogUtility.Log($"Precept {precept.def} added: {points2}");
+                        LogUtility.Log($"Precept {precept.def} added: {points2.ToStringCached()}");
                     points += points2;
-                    explanation += $"\n{precept.GetFullName()} added: {points2}";
+                    explanation += $"\n{precept.GetFullName()} added: {points2.ToStringCached()}";
                 }
             }
 
             foreach (Precept precept in GetRemovedPrecepts(ideo, newIdeo))
             {
-                points2 = -GetDevPointsCost(precept.def) * Settings.DevPointsPerPrecept;
+                points2 = -precept.def.GetDevPointsCost() * Settings.PreceptCost;
                 if (points2 != 0)
                 {
                     if (log)
-                        LogUtility.Log($"Precept {precept.def} removed: {points2}");
+                        LogUtility.Log($"Precept {precept.def} removed: {points2.ToStringCached()}");
                     points += points2;
-                    explanation += $"\n{precept.GetFullName()} removed: {points2}";
+                    explanation += $"\n{precept.GetFullName()} removed: {points2.ToStringCached()}";
                 }
             }
 
             if (log)
-                LogUtility.Log($"Total dev points required for reform: {points}");
+                LogUtility.Log($"Total dev points required for reform: {points.ToStringCached()}");
             return points;
         }
     }

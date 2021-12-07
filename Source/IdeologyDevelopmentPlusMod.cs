@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using Verse;
 
 namespace IdeologyDevelopmentPlus
@@ -14,10 +9,8 @@ namespace IdeologyDevelopmentPlus
         Rect viewRect = new Rect();
 
         public IdeologyDevelopmentPlusMod(ModContentPack content)
-            : base(content)
-        {
+            : base(content) =>
             GetSettings<Settings>();
-        }
 
         public override void DoSettingsWindowContents(Rect rect)
         {
@@ -37,37 +30,40 @@ namespace IdeologyDevelopmentPlus
             Settings.DevPointsMultiplier = (int)content.Slider(Settings.DevPointsMultiplier, 1, 10);
 
             content.Label(
-                $"Reform cost base: {Settings.DevPointsReformCostBase.ToStringCached()}",
-                tooltip: $"How many dev points needed for the first reform (default: {Settings.DevPointsReformCostBase_Default.ToStringCached()})");
-            Settings.DevPointsReformCostBase = (int)content.Slider(Settings.DevPointsReformCostBase, 0, 20);
+                $"First reform base cost: {Settings.ReformCostStart.ToStringCached()}",
+                tooltip: $"How many dev points needed for the first reform (default: {Settings.ReformCostStart_Default.ToStringCached()})");
+            Settings.ReformCostStart = (int)content.Slider(Settings.ReformCostStart, 0, 20);
 
             content.Label(
-                $"Cost increase per reform: {Settings.DevPointsReformCostPerReform.ToStringCached()}",
-                tooltip: $"Cost of reform is increased by this amount after every reform (default: {Settings.DevPointsReformCostPerReform_Default.ToStringCached()})");
-            Settings.DevPointsReformCostPerReform = (int)content.Slider(Settings.DevPointsReformCostPerReform, 0, 10);
+                $"Base cost increase per reform: {Settings.ReformCostIncrement.ToStringCached()}",
+                tooltip: $"Cost of reform is increased by this amount after every reform (default: {Settings.ReformCostIncrement_Default.ToStringCached()})");
+            Settings.ReformCostIncrement = (int)content.Slider(Settings.ReformCostIncrement, 0, 10);
 
             content.Label(
-                $"Max reform cost: {Settings.DevPointsReformCostMax.ToStringCached()}",
-                tooltip: $"Maximum cost of a reform (default: {Settings.DevPointsReformCostMax_Default.ToStringCached()})");
-            Settings.DevPointsReformCostMax = (int)content.Slider(Settings.DevPointsReformCostMax, Settings.DevPointsReformCostBase, Settings.DevPointsReformCostBase + 10 * Settings.DevPointsReformCostPerReform);
+                $"Max reform base cost: {Settings.ReformCostMax.ToStringCached()}",
+                tooltip: $"Base cost of a reform stops increasing after reaching this value (default: {Settings.ReformCostMax_Default.ToStringCached()})");
+            Settings.ReformCostMax = (int)content.Slider(Settings.ReformCostMax, Settings.ReformCostStart, Settings.ReformCostStart + 10 * Settings.ReformCostIncrement);
 
             content.Label(
-                $"Meme cost per impact: {Settings.DevPointsPerImpact.ToStringCached()}",
-                tooltip: $"How many dev points adding or removing a meme costs per impact level (default: {Settings.DevPointsPerImpact_Default.ToStringCached()})");
-            Settings.DevPointsPerImpact = (int)content.Slider(Settings.DevPointsPerImpact, 0, 10);
+                $"Meme cost per impact: {Settings.MemeCostPerImpact.ToStringCached()}",
+                tooltip: $"How many dev points adding or removing a meme costs per impact level (default: {Settings.MemeCostPerImpact_Default.ToStringCached()})");
+            Settings.MemeCostPerImpact = (int)content.Slider(Settings.MemeCostPerImpact, 0, 10);
 
             content.Label(
-              $"Precept change cost: {Settings.DevPointsPerIssue.ToStringCached()}",
-              tooltip: $"How many dev points shifting a precept by one step costs (default: {Settings.DevPointsPerIssue_Default.ToStringCached()})");
-            Settings.DevPointsPerIssue = (int)content.Slider(Settings.DevPointsPerIssue, 0, 10);
+              $"Precept change cost: {Settings.IssueCost.ToStringCached()}",
+              tooltip: $"How many dev points shifting a precept by one step costs (default: {Settings.IssueCost_Default.ToStringCached()})");
+            Settings.IssueCost = (int)content.Slider(Settings.IssueCost, 0, 10);
 
             content.Label(
-                $"Precept cost per impact: {Settings.DevPointsPerPrecept.ToStringCached()}",
-                tooltip: $"How many dev points adding or removing a precept costs, scaled with precept's gameplay impact (default: {Settings.DevPointsPerPrecept_Default.ToStringCached()})");
-            Settings.DevPointsPerPrecept = (int)content.Slider(Settings.DevPointsPerPrecept, 0, 10);
+                $"Precept cost per impact: {Settings.PreceptCost.ToStringCached()}",
+                tooltip: $"How many dev points adding or removing a precept costs, scaled with precept's gameplay impact (default: {Settings.PreceptCost_Default.ToStringCached()})");
+            Settings.PreceptCost = (int)content.Slider(Settings.PreceptCost, 0, 10);
 
-            if (!IdeoUtility.PlayerIdeo.Fluid && content.ButtonText("Make ideo fluid"))
-                IdeologyDevelopmentPlus.MakeIdeoFluid();
+            if (IdeoUtility.PlayerIdeo != null && !IdeoUtility.PlayerIdeo.Fluid && content.ButtonText("Make ideo fluid"))
+                IdeoUtility.MakeIdeoFluid();
+
+            if (content.ButtonText("Reset"))
+                Settings.Reset();
 
             viewRect.height = content.CurHeight;
             content.End();

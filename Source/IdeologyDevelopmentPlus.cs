@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using HarmonyLib;
 using RimWorld;
 using UnityEngine;
@@ -26,26 +25,26 @@ namespace IdeologyDevelopmentPlus
 
             void Patch(string methodToPatch, string prefix = null, string postfix = null)
             {
-                MethodInfo patchInfo = null;
                 try
                 {
-                    patchInfo = harmony.Patch(AccessTools.Method(methodToPatch),
+                    if (harmony.Patch(
+                        AccessTools.Method(methodToPatch),
                         prefix != null ? new HarmonyMethod(type.GetMethod(prefix)) : null,
-                        postfix != null ? new HarmonyMethod(type.GetMethod(postfix)) : null);
+                        postfix != null ? new HarmonyMethod(type.GetMethod(postfix)) : null) == null)
+                        LogUtility.Log($"Error patching {methodToPatch}.", LogLevel.Error);
                 }
                 catch (Exception ex)
                 { LogUtility.Log($"Exception while patching {methodToPatch}: {ex}"); }
-                if (patchInfo == null)
-                    LogUtility.Log($"Error patching {methodToPatch}.", LogLevel.Error);
             }
 
             Patch("RimWorld.IdeoDevelopmentUtility:ConfirmChangesToIdeo", "IdeoDevelopmentUtility_ConfirmChangesToIdeo");
             Patch("RimWorld.IdeoDevelopmentTracker:TryAddDevelopmentPoints", "IdeoDevelopmentTracker_TryAddDevelopmentPoints");
             Patch("RimWorld.IdeoDevelopmentTracker:ResetDevelopmentPoints", "IdeoDevelopmentTracker_ResetDevelopmentPoints");
             Patch("RimWorld.Dialog_ReformIdeo:DoWindowContents", postfix: "Dialog_ReformIdeo_DoWindowContents");
-            harmony.Patch(
+            if (harmony.Patch(
                 AccessTools.PropertyGetter(typeof(IdeoDevelopmentTracker), "NextReformationDevelopmentPoints"),
-                new HarmonyMethod(type.GetMethod("IdeoDevelopmentTracker_NextReformationDevelopmentPoints")));
+                new HarmonyMethod(type.GetMethod("IdeoDevelopmentTracker_NextReformationDevelopmentPoints"))) == null)
+                LogUtility.Log($"Error patching IdeoDevelopmentTracker.NextReformationDevelopmentPoints.", LogLevel.Error);
             LogUtility.Log($"Inititalization complete.");
         }
 
@@ -54,17 +53,15 @@ namespace IdeologyDevelopmentPlus
             Ideo ideo = IdeoUtility.PlayerIdeo;
             if (ideo != null && !ideo.Fluid)
                 if (Prefs.DevMode)
-                    MakeIdeoFluid();
+                    IdeoUtility.MakeIdeoFluid();
                 else Find.WindowStack.Add(new Dialog_MessageBox(
                     $"Do you want to make {ideo.name.Colorize(ideo.TextColor)} ideoligion fluid to allow its development?",
                     "OK".Translate(),
-                    MakeIdeoFluid,
+                    IdeoUtility.MakeIdeoFluid,
                     "Cancel".Translate(),
-                    acceptAction: MakeIdeoFluid,
+                    acceptAction: IdeoUtility.MakeIdeoFluid,
                     title: "Ideology Development+"));
         }
-
-        public static void MakeIdeoFluid() => IdeoUtility.PlayerIdeo.Fluid = true;
 
         #region HARMONY PATCHES
 
@@ -74,10 +71,10 @@ namespace IdeologyDevelopmentPlus
         public static bool IdeoDevelopmentUtility_ConfirmChangesToIdeo(Ideo ideo, Ideo newIdeo)
         {
             points = IdeoUtility.GetPoints(ideo, newIdeo, out explanation);
-            LogUtility.Log($"Available dev points: {IdeoUtility.PlayerIdeoDevelopment.points}.");
-            if (IdeoUtility.PlayerIdeoDevelopment.points < points)
+            LogUtility.Log($"Available dev points: {IdeoUtility.PlayerIdeoPoints.ToStringCached()}");
+            if (IdeoUtility.PlayerIdeoPoints < points)
             {
-                Messages.Message($"Can't reform ideoligion: {points} development points needed.", MessageTypeDefOf.RejectInput, false);
+                Messages.Message($"Can't reform ideoligion: {points.ToStringCached()} development points needed.", MessageTypeDefOf.RejectInput, false);
                 return false;
             }
             return true;
@@ -88,7 +85,7 @@ namespace IdeologyDevelopmentPlus
         /// </summary>
         public static bool IdeoDevelopmentTracker_TryAddDevelopmentPoints(IdeoDevelopmentTracker __instance, ref bool __result, int pointsToAdd)
         {
-            LogUtility.Log($"IdeoDevelopmentTracker_TryAddDevelopmentPoints({__instance.ideo}, {pointsToAdd})");
+            LogUtility.Log($"IdeoDevelopmentTracker_TryAddDevelopmentPoints({__instance.ideo}, {pointsToAdd.ToStringCached()})");
             bool canReformNow = __instance.CanReformNow;
             __instance.points += pointsToAdd * Settings.DevPointsMultiplier;
             if (!canReformNow && __instance.CanReformNow)
@@ -113,7 +110,7 @@ namespace IdeologyDevelopmentPlus
         /// </summary>
         public static bool IdeoDevelopmentTracker_NextReformationDevelopmentPoints(IdeoDevelopmentTracker __instance, ref int __result)
         {
-            __result = IdeoUtility.DevPointsReformCost;
+            __result = IdeoUtility.BaseReformCost;
             return false;
         }
 
@@ -123,12 +120,12 @@ namespace IdeologyDevelopmentPlus
         public static void Dialog_ReformIdeo_DoWindowContents(Dialog_ReformIdeo __instance, Rect inRect, Ideo ___ideo, Ideo ___newIdeo)
         {
             points = IdeoUtility.GetPoints(___ideo, ___newIdeo, out explanation, false);
-            int availablePoints = IdeoUtility.PlayerIdeoDevelopment.Points;
+            int availablePoints = IdeoUtility.PlayerIdeoPoints;
             if (availablePoints < points)
                 GUI.color = Color.red;
             else GUI.color = Color.white;
             float y = inRect.y;
-            Widgets.Label(inRect.x + inRect.width - 100, ref y, 100, $"Points: {points} / {availablePoints}", explanation);
+            Widgets.Label(inRect.x + inRect.width - 100, ref y, 100, $"Points: {points.ToStringCached()} / {availablePoints.ToStringCached()}", explanation);
             GUI.color = Color.white; 
             if (Widgets.ButtonText(new Rect(inRect.x + inRect.width - 100, y, 100, 40), "Reset"))
             {
