@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using HarmonyLib;
 using RimWorld;
 using UnityEngine;
@@ -99,7 +100,6 @@ namespace IdeologyDevelopmentPlus
         /// </summary>
         public static bool IdeoDevelopmentTracker_ResetDevelopmentPoints(IdeoDevelopmentTracker __instance)
         {
-            LogUtility.Log($"IdeoDevelopmentTracker_ResetDevelopmentPoints({__instance.ideo})");
             __instance.points -= points;
             points = 0;
             return false;
@@ -117,10 +117,35 @@ namespace IdeologyDevelopmentPlus
         /// <summary>
         /// Displays current and needed dev points
         /// </summary>
-        public static void Dialog_ReformIdeo_DoWindowContents(Dialog_ReformIdeo __instance, Rect inRect, Ideo ___ideo, Ideo ___newIdeo)
+        public static void Dialog_ReformIdeo_DoWindowContents(Dialog_ReformIdeo __instance, Rect inRect, Ideo ___ideo, Ideo ___newIdeo, ref IdeoReformStage ___stage)
         {
             points = IdeoUtility.GetPoints(___ideo, ___newIdeo, out explanation, false);
             int availablePoints = IdeoUtility.PlayerIdeoPoints;
+
+            if (Settings.RandomizePrecepts && ___stage == IdeoReformStage.PreceptsNarrativeAndDeities)
+            {
+                LogUtility.Log("Memes selected in Surprise Precepts Mode.");
+                ___stage = IdeoReformStage.MemesAndStyles;
+                if (availablePoints < points)
+                {
+                    LogUtility.Log($"Not enough dev points ({points} needed, {availablePoints} available).");
+                    Messages.Message($"Can't reform ideoligion: {points.ToStringCached()} development points needed.", MessageTypeDefOf.RejectInput, false);
+                    return;
+                }
+                ___newIdeo.foundation.RandomizePrecepts(true, new IdeoGenerationParms(Faction.OfPlayer.def));
+                LogUtility.Log($"Added precepts: {IdeoUtility.GetAddedPrecepts(___ideo, ___newIdeo).Select(precept => precept.def.defName).ToCommaList()}");
+                LogUtility.Log($"Removed precepts: {IdeoUtility.GetRemovedPrecepts(___ideo, ___newIdeo).Select(precept => precept.def.defName).ToCommaList()}");
+                LogUtility.Log($"Changed issues: {IdeoUtility.GetChangedIssues(___ideo, ___newIdeo).Select(issue => issue.defName).ToCommaList()}");
+                Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
+                    "In Surprise Precepts Mode, your precepts are randomly generated based on your chosen memes. You can't manually set or preview them, but they don't cost development points. If you are unhappy with the precepts, you will have to reform again. You can disable Surprise Precepts Mode in ID+ settings.\n\nDo you want to apply the changes?",
+                    () => IdeoDevelopmentUtility.ConfirmChangesToIdeo(___ideo, ___newIdeo, () =>
+                    {
+                        IdeoDevelopmentUtility.ApplyChangesToIdeo(___ideo, ___newIdeo);
+                        __instance.Close();
+                    }),
+                    title: "Ideology Development+"));
+            }
+
             if (availablePoints < points)
                 GUI.color = Color.red;
             else GUI.color = Color.white;

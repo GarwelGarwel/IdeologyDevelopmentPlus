@@ -59,6 +59,8 @@ namespace IdeologyDevelopmentPlus
                 tooltip: $"How many dev points adding or removing a precept costs, scaled with precept's gameplay impact (default: {Settings.PreceptCost_Default.ToStringCached()})");
             Settings.PreceptCost = (int)content.Slider(Settings.PreceptCost, 0, 10);
 
+            content.CheckboxLabeled("Surprise Precepts Mode", ref Settings.RandomizePrecepts, "In this mode, you only choose memes when reforming ideoligion, and the precepts are randomly generated and can't be directly changed (but they cost no dev points)");
+
             if (IdeoUtility.PlayerIdeo != null && !IdeoUtility.PlayerIdeo.Fluid && content.ButtonText("Make ideo fluid"))
                 IdeoUtility.MakeIdeoFluid();
 

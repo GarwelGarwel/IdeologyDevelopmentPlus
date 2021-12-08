@@ -11,6 +11,7 @@ namespace IdeologyDevelopmentPlus
         public static int MemeCostPerImpact = MemeCostPerImpact_Default;
         public static int IssueCost = IssueCost_Default;
         public static int PreceptCost = PreceptCost_Default;
+        public static bool RandomizePrecepts;
 
         internal const int DevPointsMultiplier_Default = 2;
         internal const int ReformCostStart_Default = 10;
@@ -30,6 +31,7 @@ namespace IdeologyDevelopmentPlus
             Scribe_Values.Look(ref MemeCostPerImpact, "MemeCostPerImpact", MemeCostPerImpact_Default);
             Scribe_Values.Look(ref IssueCost, "IssueCost", IssueCost_Default);
             Scribe_Values.Look(ref PreceptCost, "PreceptCost", PreceptCost_Default);
+            Scribe_Values.Look(ref RandomizePrecepts, "RandomizePrecepts");
         }
 
         public static void Reset()

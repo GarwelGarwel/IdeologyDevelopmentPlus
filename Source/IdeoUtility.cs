@@ -23,13 +23,13 @@ namespace IdeologyDevelopmentPlus
 
         public static int GetPreceptOrder(this PreceptDef def) => def.HasModExtension<DevelopmentCosts>() ? def.GetModExtension<DevelopmentCosts>().order : 0;
 
-        public static List<MemeDef> GetAddedMemes(Ideo ideo1, Ideo ideo2) => ideo2.memes.FindAll(meme => !ideo1.memes.Contains(meme));
+        public static IEnumerable<MemeDef> GetAddedMemes(Ideo ideo1, Ideo ideo2) => ideo2.memes.Where(meme => !ideo1.memes.Contains(meme));
 
-        public static List<MemeDef> GetRemovedMemes(Ideo ideo1, Ideo ideo2) => GetAddedMemes(ideo2, ideo1);
+        public static IEnumerable<MemeDef> GetRemovedMemes(Ideo ideo1, Ideo ideo2) => GetAddedMemes(ideo2, ideo1);
 
-        public static List<Precept> GetAddedPrecepts(Ideo ideo1, Ideo ideo2) => ideo2.PreceptsListForReading.FindAll(precept => !ideo1.HasPrecept(precept.def));
+        public static IEnumerable<Precept> GetAddedPrecepts(Ideo ideo1, Ideo ideo2) => ideo2.PreceptsListForReading.Where(precept => !ideo1.HasPrecept(precept.def));
 
-        public static List<Precept> GetRemovedPrecepts(Ideo ideo1, Ideo ideo2) => GetAddedPrecepts(ideo2, ideo1);
+        public static IEnumerable<Precept> GetRemovedPrecepts(Ideo ideo1, Ideo ideo2) => GetAddedPrecepts(ideo2, ideo1);
 
         public static List<IssueDef> GetChangedIssues(Ideo ideo1, Ideo ideo2) =>
             GetAddedPrecepts(ideo1, ideo2).Union(GetRemovedPrecepts(ideo1, ideo2)).Select(precept => precept.def.issue).Distinct().ToList();
@@ -76,6 +76,9 @@ namespace IdeologyDevelopmentPlus
                     explanation += $"\n{meme.LabelCap}: {points2.ToStringCached()}";
                 }
             }
+
+            if (Settings.RandomizePrecepts)
+                return points;
 
             IEnumerable<IssueDef> changedIssues = GetChangedIssues(ideo, newIdeo);
             foreach (IssueDef issue in changedIssues)
