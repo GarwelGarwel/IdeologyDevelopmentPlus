@@ -1140,8 +1140,18 @@
 		<xpath>Defs/PreceptDef[defName="Slavery_Abhorrent"]</xpath>
 		<value>
 			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
-				<cost>-2</cost>
+				<cost>-3</cost>
 				<order>1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="Slavery_Horrible"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-2</cost>
+				<order>2</order>
 			</li>
 		</value>
 	</Operation>
@@ -1151,7 +1161,7 @@
 		<value>
 			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
 				<cost>-1</cost>
-				<order>2</order>
+				<order>3</order>
 			</li>
 		</value>
 	</Operation>
@@ -1160,7 +1170,7 @@
 		<xpath>Defs/PreceptDef[defName="Slavery_Acceptable"]</xpath>
 		<value>
 			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
-				<order>3</order>
+				<order>4</order>
 			</li>
 		</value>
 	</Operation>
@@ -1169,7 +1179,7 @@
 		<xpath>Defs/PreceptDef[defName="Slavery_Honorable"]</xpath>
 		<value>
 			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
-				<order>4</order>
+				<order>5</order>
 			</li>
 		</value>
 	</Operation>
