@@ -8,16 +8,14 @@ namespace IdeologyDevelopmentPlus
 {
     public static class IdeoUtility
     {
-        public static Ideo PlayerIdeo => Faction.OfPlayer?.ideos?.PrimaryIdeo;
+        public static Ideo PlayerIdeo => Find.FactionManager?.OfPlayer?.ideos?.PrimaryIdeo;
 
         public static int PlayerIdeoPoints => PlayerIdeo.development.Points;
 
         public static void MakeIdeoFluid() => PlayerIdeo.Fluid = true;
 
         public static int BaseReformCost =>
-            Math.Min(
-                Settings.ReformCostStart + PlayerIdeo.development.reformCount * Settings.ReformCostIncrement,
-                Settings.ReformCostMax);
+            Math.Min(Settings.ReformCostStart + PlayerIdeo.development.reformCount * Settings.ReformCostIncrement, Settings.ReformCostMax);
 
         public static int GetDevPointsCost(this Def def) => def.HasModExtension<DevelopmentCosts>() ? def.GetModExtension<DevelopmentCosts>().cost : 0;
 

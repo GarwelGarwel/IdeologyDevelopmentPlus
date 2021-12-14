@@ -9,11 +9,15 @@ namespace IdeologyDevelopmentPlus
 {
     public class IdeologyDevelopmentPlus : GameComponent
     {
+        internal const string Name = "Ideology Development+";
+
         static Harmony harmony;
-
         static int points;
-        static string explanation = "";
+        static string explanation;
 
+        /// <summary>
+        /// Applies Harmony patches
+        /// </summary>
         public IdeologyDevelopmentPlus(Game game)
         {
             Harmony.DEBUG = Prefs.DevMode;
@@ -24,31 +28,36 @@ namespace IdeologyDevelopmentPlus
             harmony = new Harmony("Garwel.IdeologyDevelopmentPlus");
             Type type = typeof(IdeologyDevelopmentPlus);
 
-            void Patch(string methodToPatch, string prefix = null, string postfix = null)
+            void LogPatchError(string methodName) => LogUtility.Log($"Error patching {methodName}.", LogLevel.Error);
+
+            void Patch(string className, string methodName, bool patchPrefix = true, bool patchPostfix = false)
             {
                 try
                 {
                     if (harmony.Patch(
-                        AccessTools.Method(methodToPatch),
-                        prefix != null ? new HarmonyMethod(type.GetMethod(prefix)) : null,
-                        postfix != null ? new HarmonyMethod(type.GetMethod(postfix)) : null) == null)
-                        LogUtility.Log($"Error patching {methodToPatch}.", LogLevel.Error);
+                        AccessTools.Method($"RimWorld.{className}:{methodName}"),
+                        patchPrefix ? new HarmonyMethod(type.GetMethod($"{className}_{methodName}")) : null,
+                        patchPostfix ? new HarmonyMethod(type.GetMethod($"{className}_{methodName}")) : null) == null)
+                        LogPatchError($"{className}.{methodName}");
                 }
                 catch (Exception ex)
-                { LogUtility.Log($"Exception while patching {methodToPatch}: {ex}"); }
+                { LogUtility.Log($"Exception while patching {className}.{methodName}: {ex}"); }
             }
 
-            Patch("RimWorld.IdeoDevelopmentUtility:ConfirmChangesToIdeo", "IdeoDevelopmentUtility_ConfirmChangesToIdeo");
-            Patch("RimWorld.IdeoDevelopmentTracker:TryAddDevelopmentPoints", "IdeoDevelopmentTracker_TryAddDevelopmentPoints");
-            Patch("RimWorld.IdeoDevelopmentTracker:ResetDevelopmentPoints", "IdeoDevelopmentTracker_ResetDevelopmentPoints");
-            Patch("RimWorld.Dialog_ReformIdeo:DoWindowContents", postfix: "Dialog_ReformIdeo_DoWindowContents");
+            Patch("IdeoDevelopmentUtility", "ConfirmChangesToIdeo");
+            Patch("IdeoDevelopmentTracker", "TryAddDevelopmentPoints");
+            Patch("IdeoDevelopmentTracker", "ResetDevelopmentPoints");
+            Patch("Dialog_ReformIdeo", "DoWindowContents", false, true);
             if (harmony.Patch(
                 AccessTools.PropertyGetter(typeof(IdeoDevelopmentTracker), "NextReformationDevelopmentPoints"),
                 new HarmonyMethod(type.GetMethod("IdeoDevelopmentTracker_NextReformationDevelopmentPoints"))) == null)
-                LogUtility.Log($"Error patching IdeoDevelopmentTracker.NextReformationDevelopmentPoints.", LogLevel.Error);
+                LogPatchError("IdeoDevelopmentTracker.NextReformationDevelopmentPoints");
             LogUtility.Log($"Inititalization complete.");
         }
 
+        /// <summary>
+        /// Shows dialog to make player ideo fluid
+        /// </summary>
         public override void FinalizeInit()
         {
             Ideo ideo = IdeoUtility.PlayerIdeo;
@@ -61,7 +70,7 @@ namespace IdeologyDevelopmentPlus
                     IdeoUtility.MakeIdeoFluid,
                     "Cancel".Translate(),
                     acceptAction: IdeoUtility.MakeIdeoFluid,
-                    title: "Ideology Development+"));
+                    title: Name));
         }
 
         #region HARMONY PATCHES
@@ -122,13 +131,14 @@ namespace IdeologyDevelopmentPlus
             points = IdeoUtility.GetPoints(___ideo, ___newIdeo, out explanation, false);
             int availablePoints = IdeoUtility.PlayerIdeoPoints;
 
+            // Surprise Precepts Mode
             if (Settings.RandomizePrecepts && ___stage == IdeoReformStage.PreceptsNarrativeAndDeities)
             {
                 LogUtility.Log("Memes selected in Surprise Precepts Mode.");
                 ___stage = IdeoReformStage.MemesAndStyles;
                 if (availablePoints < points)
                 {
-                    LogUtility.Log($"Not enough dev points ({points} needed, {availablePoints} available).");
+                    LogUtility.Log($"Not enough dev points ({points.ToStringCached()} needed, {availablePoints.ToStringCached()} available).");
                     Messages.Message($"Can't reform ideoligion: {points.ToStringCached()} development points needed.", MessageTypeDefOf.RejectInput, false);
                     return;
                 }
@@ -143,9 +153,10 @@ namespace IdeologyDevelopmentPlus
                         IdeoDevelopmentUtility.ApplyChangesToIdeo(___ideo, ___newIdeo);
                         __instance.Close();
                     }),
-                    title: "Ideology Development+"));
+                    title: Name));
             }
 
+            // Displaying points and Reset button
             if (availablePoints < points)
                 GUI.color = Color.red;
             else GUI.color = Color.white;
