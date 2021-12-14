@@ -9,22 +9,26 @@
 		<li>1.3</li>
 	</supportedVersions>
 	<description>Ideology Development+ overhauls reforming of fluid ideoligions.
+	
+A reform now requires varying amount of development points, determined by what you change. The cost consists of the following parts:
 
-Features:
+- Base reform cost, which increases with every reform until it reaches a ceiling. By default, it goes from 10 to 20 dev points.
 
-- Acquisition of development points is doubled (by default), so you can start reforming your ideoligion earlier (but there's a caveat: see below)
+- Cost of added and removed memes, scaled with their impact (2 to 6 points). Structure and style are free.
+
+- Changing precepts costs normally 1 point per precept, but it increases for spectrum-like precepts (such as number of spouses) when you want to jump several steps at a time (e.g. from having 1 spouse to having 4).
+
+- Adding or removing certain precepts that have a serious gameplay impact may cost or reimburse dev points. E.g. adopting Very Fast Research will cost you 4 more points; adopting Very Slow Research will give you 4 dev points.
+
+Notes:
+
+- Acquisition of development points is doubled (by default). So when the game says you will receive 2 dev points for a ritual, you will actually get 4, and so on.
 
 - Dev point cap is removed (i.e. you can accumulate as many dev points as you want)
 
-- Adding or removing most memes and precepts costs dev points
+- In Surprise Precepts Mode (enable in mod settings), you only choose memes (and also culture) and precepts are randomly auto-generated. You can't preview or change them, but they are free
 
-- Cost of adding or removing memes scales with their impact
-
-- Some precepts cost more or less dev points than the others (e.g. faster vs slower research speeds)
-
-- For spectrum-like precepts (e.g. number of spouses), switching between nearby options costs less than jumping between opposites
-
-- In Surprise Precepts Mode, you only choose memes (and also culture) and precepts are randomly auto-generated. You can't preview or change them, but they are free
+- Can be added to an ongoing game, even if your ideoligion is not fluid (you will be offered to make it such). Removing it mid-game will cause a one-time harmless error message
 
 - Most values can be tweaked to your liking
 
@@ -32,7 +36,9 @@ Obviously, Ideology DLC is required. So is Harmony.
 
 Should be compatible with most mods except those that also change the ideo development. May need additional patches for better balancing custom precepts.
 
-Let me know if you think the balance is off somewhere.</description>
+Let me know if you think the balance is off somewhere.
+
+Github: https://github.com/GarwelGarwel/IdeologyDevelopmentPlus</description>
 	<modDependencies>
 		<li>
 			<packageId>Ludeon.RimWorld.Ideology</packageId>
