@@ -87,7 +87,7 @@ namespace IdeologyDevelopmentPlus
                     if (log)
                         LogUtility.Log($"Issue {issue}: {points2.ToStringCached()}");
                     points += points2;
-                    explanation += $"\n{issue.LabelCap}: {points2.ToStringCached()}";
+                    explanation += $"\n{issue.LabelCap} changed: {points2.ToStringCached()}";
                 }
             }
 

@@ -52,7 +52,7 @@ namespace IdeologyDevelopmentPlus
                 AccessTools.PropertyGetter(typeof(IdeoDevelopmentTracker), "NextReformationDevelopmentPoints"),
                 new HarmonyMethod(type.GetMethod("IdeoDevelopmentTracker_NextReformationDevelopmentPoints"))) == null)
                 LogPatchError("IdeoDevelopmentTracker.NextReformationDevelopmentPoints");
-            LogUtility.Log($"Inititalization complete.");
+            LogUtility.Log($"Initialization complete.");
         }
 
         /// <summary>
