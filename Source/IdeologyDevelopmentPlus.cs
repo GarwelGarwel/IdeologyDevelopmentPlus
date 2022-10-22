@@ -20,8 +20,6 @@ namespace IdeologyDevelopmentPlus
         /// </summary>
         public IdeologyDevelopmentPlus(Game game)
         {
-            Harmony.DEBUG = Prefs.DevMode;
-
             if (harmony != null)
                 return;
 
