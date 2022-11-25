@@ -23,6 +23,12 @@ namespace IdeologyDevelopmentPlus
             if (harmony != null)
                 return;
 
+            if (!ModsConfig.IdeologyActive)
+            {
+                LogUtility.Log($"Ideology DLC is required for Ideology Development+!", LogLevel.Error);
+                return;
+            }
+
             harmony = new Harmony("Garwel.IdeologyDevelopmentPlus");
             Type type = typeof(IdeologyDevelopmentPlus);
 
@@ -58,6 +64,8 @@ namespace IdeologyDevelopmentPlus
         /// </summary>
         public override void FinalizeInit()
         {
+            if (harmony == null)
+                return;
             Ideo ideo = IdeoUtility.PlayerIdeo;
             if (ideo != null && !ideo.Fluid)
                 if (Prefs.DevMode)
@@ -95,7 +103,7 @@ namespace IdeologyDevelopmentPlus
         {
             LogUtility.Log($"IdeoDevelopmentTracker_TryAddDevelopmentPoints({__instance.ideo}, {pointsToAdd.ToStringCached()})");
             bool canReformNow = __instance.CanReformNow;
-            __instance.points += pointsToAdd * Settings.DevPointsMultiplier;
+            __instance.points += Mathf.RoundToInt(pointsToAdd * Settings.DevPointsMultiplier);
             if (!canReformNow && __instance.CanReformNow)
                 Find.LetterStack.ReceiveLetter("LetterLabelReformIdeo".Translate(), "LetterTextReformIdeo".Translate(__instance.ideo), LetterDefOf.PositiveEvent);
             __result = true;
