@@ -18,13 +18,4 @@
         </value>
     </Operation>
 
-    <!--Operation Class="PatchOperationReplace">
-        <xpath>Defs/IssueDef[defName="IdeoRole"]/modExtensions/li[@Class="IdeologyDevelopmentPlus.DevelopmentCosts"]</xpath>
-        <value>
-            <li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
-				<cost>0</cost>
-            </li>
-        </value>
-    </Operation-->
-
 </Patch>

@@ -1,0 +1,87 @@
+<Patch>
+
+	<!-- Bloodfeeders -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="Bloodfeeders_Revered"]</xpath>
+		<success>Always</success>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+				<order>-1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="Bloodfeeders_Reviled"]</xpath>
+		<success>Always</success>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-1</cost>
+				<order>1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- ChildLabor -->
+	
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="ChildLabor_Encouraged"]</xpath>
+		<success>Always</success>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+				<order>-1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="ChildLabor_Disapproved"]</xpath>
+		<success>Always</success>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-1</cost>
+				<order>1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- GrowthVat -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="GrowthVat_Essential"]</xpath>
+		<success>Always</success>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+				<order>-1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="GrowthVat_Prohibited"]</xpath>
+		<success>Always</success>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-1</cost>
+				<order>1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- MechanoidLabor -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="MechanoidLabor_Enhanced"]</xpath>
+		<success>Always</success>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>2</cost>
+			</li>
+		</value>
+	</Operation>
+
+</Patch>
