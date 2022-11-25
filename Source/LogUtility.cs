@@ -1,6 +1,4 @@
-﻿using Verse;
-
-namespace IdeologyDevelopmentPlus
+﻿namespace IdeologyDevelopmentPlus
 {
     enum LogLevel
     {
@@ -17,7 +15,7 @@ namespace IdeologyDevelopmentPlus
             switch (logLevel)
             {
                 case LogLevel.Message:
-                    if (Prefs.DevMode || Prefs.LogVerbose)
+                    if (Settings.DebugMode)
                         Verse.Log.Message(message);
                     break;
 

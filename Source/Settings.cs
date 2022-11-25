@@ -1,10 +1,12 @@
 ﻿using Verse;
 
+using static IdeologyDevelopmentPlus.LogUtility;
+
 namespace IdeologyDevelopmentPlus
 {
     public class Settings : ModSettings
     {
-        public static int DevPointsMultiplier = DevPointsMultiplier_Default;
+        public static float DevPointsMultiplier = DevPointsMultiplier_Default;
         public static int ReformCostStart = ReformCostStart_Default;
         public static int ReformCostIncrement = ReformCostIncrement_Default;
         public static int ReformCostMax = ReformCostMax_Default;
@@ -12,8 +14,9 @@ namespace IdeologyDevelopmentPlus
         public static int IssueCost = IssueCost_Default;
         public static int PreceptCost = PreceptCost_Default;
         public static bool RandomizePrecepts;
+        public static bool DebugMode = Prefs.LogVerbose;
 
-        internal const int DevPointsMultiplier_Default = 2;
+        internal const float DevPointsMultiplier_Default = 2;
         internal const int ReformCostStart_Default = 10;
         internal const int ReformCostIncrement_Default = 2;
         internal const int ReformCostMax_Default = 20;
@@ -32,6 +35,9 @@ namespace IdeologyDevelopmentPlus
             Scribe_Values.Look(ref IssueCost, "IssueCost", IssueCost_Default);
             Scribe_Values.Look(ref PreceptCost, "PreceptCost", PreceptCost_Default);
             Scribe_Values.Look(ref RandomizePrecepts, "RandomizePrecepts");
+            Scribe_Values.Look(ref DebugMode, "DebugMode");
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+                Print();
         }
 
         public static void Reset()
@@ -43,6 +49,22 @@ namespace IdeologyDevelopmentPlus
             MemeCostPerImpact = MemeCostPerImpact_Default;
             IssueCost = IssueCost_Default;
             PreceptCost = PreceptCost_Default;
+            RandomizePrecepts = false;
+            Print();
+        }
+
+        public static void Print()
+        {
+            if (!DebugMode)
+                return;
+            Log($"DevPointsMultiplier: {DevPointsMultiplier}");
+            Log($"ReformCostStart: {ReformCostStart}");
+            Log($"ReformCostIncrement: {ReformCostIncrement}");
+            Log($"ReformCostMax: {ReformCostMax}");
+            Log($"MemeCostPerImpact: {MemeCostPerImpact}");
+            Log($"IssueCost: {IssueCost}");
+            Log($"PreceptCost: {PreceptCost}");
+            Log($"RandomizePrecepts: {RandomizePrecepts}");
         }
     }
 }
