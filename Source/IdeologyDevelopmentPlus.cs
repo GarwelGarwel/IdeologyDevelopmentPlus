@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using HarmonyLib;
 using RimWorld;
 using UnityEngine;
@@ -52,6 +53,11 @@ namespace IdeologyDevelopmentPlus
             Patch("IdeoDevelopmentTracker", "TryAddDevelopmentPoints");
             Patch("IdeoDevelopmentTracker", "ResetDevelopmentPoints");
             Patch("Dialog_ReformIdeo", "DoWindowContents", false, true);
+            if (harmony.Patch(
+                AccessTools.Method("RimWorld.RitualOutcomeEffectWorker_FromQuality:ApplyDevelopmentPoints"),
+                prefix: new HarmonyMethod(type.GetMethod("RitualOutcomeEffectWorker_FromQuality_ApplyDevelopmentPoints_Prefix")),
+                finalizer: new HarmonyMethod(type.GetMethod("RitualOutcomeEffectWorker_FromQuality_ApplyDevelopmentPoints_Finalizer"))) == null)
+                LogPatchError("RitualOutcomeEffectWorker_FromQuality.ApplyDevelopmentPoints");
             if (harmony.Patch(
                 AccessTools.PropertyGetter(typeof(IdeoDevelopmentTracker), "NextReformationDevelopmentPoints"),
                 new HarmonyMethod(type.GetMethod("IdeoDevelopmentTracker_NextReformationDevelopmentPoints"))) == null)
@@ -120,12 +126,26 @@ namespace IdeologyDevelopmentPlus
             return false;
         }
 
+        // The following members are a hack to make sure that a call to IdeoDevelopmentTracker.NextReformationDevelopmentPoints from
+        // RitualOutcomeEffectWorker_FromQuality.ApplyDevelopmentPoints returns an invalid (very large) value. It is used to fix a bug where rituals don't
+        // award any dev points if current dev points is exactly the base reform cost.
+        static bool inApplyDevelopmentPoints = false;
+
+        public static void RitualOutcomeEffectWorker_FromQuality_ApplyDevelopmentPoints_Prefix() => inApplyDevelopmentPoints = true;
+
+        public static void RitualOutcomeEffectWorker_FromQuality_ApplyDevelopmentPoints_Finalizer() => inApplyDevelopmentPoints = false;
+
         /// <summary>
         /// Replaces IdeoDevelopmentTracker.NextReformationDevelopmentPoints to change dev points requirements
         /// </summary>
         public static bool IdeoDevelopmentTracker_NextReformationDevelopmentPoints(IdeoDevelopmentTracker __instance, ref int __result)
         {
-            __result = IdeoUtility.BaseReformCost;
+            if (inApplyDevelopmentPoints)
+            {
+                inApplyDevelopmentPoints = false;
+                __result = int.MaxValue;
+            }
+            else __result = IdeoUtility.BaseReformCost;
             return false;
         }
 
