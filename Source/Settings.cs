@@ -6,13 +6,13 @@ namespace IdeologyDevelopmentPlus
 {
     public class Settings : ModSettings
     {
-        public static float DevPointsMultiplier = DevPointsMultiplier_Default;
-        public static int ReformCostStart = ReformCostStart_Default;
-        public static int ReformCostIncrement = ReformCostIncrement_Default;
-        public static int ReformCostMax = ReformCostMax_Default;
-        public static int MemeCostPerImpact = MemeCostPerImpact_Default;
-        public static int IssueCost = IssueCost_Default;
-        public static int PreceptCost = PreceptCost_Default;
+        public static float DevPointsMultiplier;
+        public static int ReformCostStart;
+        public static int ReformCostIncrement;
+        public static int ReformCostMax;
+        public static int MemeCostPerImpact;
+        public static int IssueCost;
+        public static int PreceptCost;
         public static bool RandomizePrecepts;
         public static bool DebugMode = Prefs.LogVerbose;
 
@@ -23,6 +23,8 @@ namespace IdeologyDevelopmentPlus
         internal const int MemeCostPerImpact_Default = 2;
         internal const int IssueCost_Default = 1;
         internal const int PreceptCost_Default = 2;
+
+        public Settings() => Reset();
 
         public override void ExposeData()
         {
@@ -50,6 +52,7 @@ namespace IdeologyDevelopmentPlus
             IssueCost = IssueCost_Default;
             PreceptCost = PreceptCost_Default;
             RandomizePrecepts = false;
+            Log($"Settings reset.");
             Print();
         }
 
@@ -57,13 +60,13 @@ namespace IdeologyDevelopmentPlus
         {
             if (!DebugMode)
                 return;
-            Log($"DevPointsMultiplier: {DevPointsMultiplier}");
-            Log($"ReformCostStart: {ReformCostStart}");
-            Log($"ReformCostIncrement: {ReformCostIncrement}");
-            Log($"ReformCostMax: {ReformCostMax}");
-            Log($"MemeCostPerImpact: {MemeCostPerImpact}");
-            Log($"IssueCost: {IssueCost}");
-            Log($"PreceptCost: {PreceptCost}");
+            Log($"DevPointsMultiplier: {DevPointsMultiplier.ToStringPercent()}");
+            Log($"ReformCostStart: {ReformCostStart.ToStringCached()}");
+            Log($"ReformCostIncrement: {ReformCostIncrement.ToStringCached()}");
+            Log($"ReformCostMax: {ReformCostMax.ToStringCached()}");
+            Log($"MemeCostPerImpact: {MemeCostPerImpact.ToStringCached()}");
+            Log($"IssueCost: {IssueCost.ToStringCached()}");
+            Log($"PreceptCost: {PreceptCost.ToStringCached()}");
             Log($"RandomizePrecepts: {RandomizePrecepts}");
         }
     }
