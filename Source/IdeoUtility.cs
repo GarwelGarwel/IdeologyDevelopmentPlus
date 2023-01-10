@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Verse;
 
 namespace IdeologyDevelopmentPlus
@@ -55,10 +56,10 @@ namespace IdeologyDevelopmentPlus
             log &= Prefs.DevMode;
             int points = BaseReformCost;
             int points2;
-            explanation = $"Base: {points.ToStringCached()}";
+            StringBuilder exp = new StringBuilder($"Base: {points.ToStringCached()}");
 
             IEnumerable<MemeDef> changedMemes = GetAddedMemes(ideo, newIdeo).Union(GetRemovedMemes(ideo, newIdeo));
-            if (log)
+            if (log && changedMemes.Any())
             {
                 LogUtility.Log($"Added memes: {GetAddedMemes(ideo, newIdeo).Select(meme => $"{meme} (impact {meme.impact.ToStringCached()})").ToCommaList()}");
                 LogUtility.Log($"Removed memes: {GetRemovedMemes(ideo, newIdeo).Select(meme => $"{meme} (impact {meme.impact.ToStringCached()})").ToCommaList()}");
@@ -71,52 +72,53 @@ namespace IdeologyDevelopmentPlus
                     if (log)
                         LogUtility.Log($"Meme {meme} (impact {meme.impact.ToStringCached()}): {points2}");
                     points += points2;
-                    explanation += $"\n{meme.LabelCap}: {points2.ToStringCached()}";
+                    exp.AppendInNewLine($"{meme.LabelCap}: {points2.ToStringCached()}");
                 }
             }
 
-            if (Settings.RandomizePrecepts)
-                return points;
-
-            IEnumerable<IssueDef> changedIssues = GetChangedIssues(ideo, newIdeo);
-            foreach (IssueDef issue in changedIssues)
+            if (!Settings.RandomizePrecepts)
             {
-                points2 = Math.Max(GetPreceptOrderDifference(ideo, newIdeo, issue), 1) * issue.GetDevPointsCost() * Settings.IssueCost;
-                if (points2 != 0)
+                IEnumerable<IssueDef> changedIssues = GetChangedIssues(ideo, newIdeo);
+                foreach (IssueDef issue in changedIssues)
                 {
-                    if (log)
-                        LogUtility.Log($"Issue {issue}: {points2.ToStringCached()}");
-                    points += points2;
-                    explanation += $"\n{issue.LabelCap} changed: {points2.ToStringCached()}";
+                    points2 = Math.Max(GetPreceptOrderDifference(ideo, newIdeo, issue), 1) * issue.GetDevPointsCost() * Settings.IssueCost;
+                    if (points2 != 0)
+                    {
+                        if (log)
+                            LogUtility.Log($"Issue {issue}: {points2.ToStringCached()}");
+                        points += points2;
+                        exp.AppendInNewLine($"{issue.LabelCap} changed: {points2.ToStringCached()}");
+                    }
                 }
-            }
 
-            foreach (Precept precept in GetAddedPrecepts(ideo, newIdeo))
-            {
-                points2 = precept.def.GetDevPointsCost() * Settings.PreceptCost;
-                if (points2 != 0)
+                foreach (Precept precept in GetAddedPrecepts(ideo, newIdeo))
                 {
-                    if (log)
-                        LogUtility.Log($"Precept {precept.def} added: {points2.ToStringCached()}");
-                    points += points2;
-                    explanation += $"\n{precept.GetFullName()} added: {points2.ToStringCached()}";
+                    points2 = precept.def.GetDevPointsCost() * Settings.PreceptCost;
+                    if (points2 != 0)
+                    {
+                        if (log)
+                            LogUtility.Log($"Precept {precept.def} added: {points2.ToStringCached()}");
+                        points += points2;
+                        exp.AppendInNewLine($"{precept.GetFullName()} added: {points2.ToStringCached()}");
+                    }
                 }
-            }
 
-            foreach (Precept precept in GetRemovedPrecepts(ideo, newIdeo))
-            {
-                points2 = -precept.def.GetDevPointsCost() * Settings.PreceptCost;
-                if (points2 != 0)
+                foreach (Precept precept in GetRemovedPrecepts(ideo, newIdeo))
                 {
-                    if (log)
-                        LogUtility.Log($"Precept {precept.def} removed: {points2.ToStringCached()}");
-                    points += points2;
-                    explanation += $"\n{precept.GetFullName()} removed: {points2.ToStringCached()}";
+                    points2 = -precept.def.GetDevPointsCost() * Settings.PreceptCost;
+                    if (points2 != 0)
+                    {
+                        if (log)
+                            LogUtility.Log($"Precept {precept.def} removed: {points2.ToStringCached()}");
+                        points += points2;
+                        exp.AppendInNewLine($"{precept.GetFullName()} removed: {points2.ToStringCached()}");
+                    }
                 }
             }
 
             if (log)
                 LogUtility.Log($"Total dev points required for reform: {points.ToStringCached()}");
+            explanation = exp.ToString();
             return points;
         }
     }
