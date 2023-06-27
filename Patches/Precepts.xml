@@ -67,7 +67,7 @@
 		<xpath>Defs/PreceptDef[defName="ApparelDesired_Strong_Subordinate"]</xpath>
 		<value>
 			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
-				<order>2</order>
+				<cost>2</cost>
 			</li>
 		</value>
 	</Operation>
@@ -76,7 +76,7 @@
 		<xpath>Defs/PreceptDef[defName="ApparelDesired_Soft_Subordinate"]</xpath>
 		<value>
 			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
-				<order>1</order>
+				<cost>1</cost>
 			</li>
 		</value>
 	</Operation>
@@ -1348,6 +1348,39 @@
 
 	<Operation Class="PatchOperationAddModExtension">
 		<xpath>Defs/PreceptDef[issue="IdeoRole"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- AnimalVenerated -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="AnimalVenerated"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- IdeoBuilding -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="IdeoBuilding"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- IdeoRelic -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="IdeoRelic"]</xpath>
 		<value>
 			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
 				<cost>1</cost>
