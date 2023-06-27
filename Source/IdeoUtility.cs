@@ -22,11 +22,15 @@ namespace IdeologyDevelopmentPlus
 
         public static int GetPreceptOrder(this PreceptDef def) => def.HasModExtension<DevelopmentCosts>() ? def.GetModExtension<DevelopmentCosts>().order : 0;
 
+        public static bool SametAs(this Precept precept1, Precept precept2) =>
+            precept1.Id == precept2.Id || (!precept1.def.issue.allowMultiplePrecepts && precept1.def == precept2.def);
+
         public static IEnumerable<MemeDef> GetAddedMemes(Ideo ideo1, Ideo ideo2) => ideo2.memes.Where(meme => !ideo1.memes.Contains(meme));
 
         public static IEnumerable<MemeDef> GetRemovedMemes(Ideo ideo1, Ideo ideo2) => GetAddedMemes(ideo2, ideo1);
 
-        public static IEnumerable<Precept> GetAddedPrecepts(Ideo ideo1, Ideo ideo2) => ideo2.PreceptsListForReading.Where(precept => !ideo1.HasPrecept(precept.def));
+        public static IEnumerable<Precept> GetAddedPrecepts(Ideo ideo1, Ideo ideo2) =>
+            ideo2.PreceptsListForReading.Where(precept => ideo1.PreceptsListForReading.All(precept2 => !precept.SametAs(precept2)));
 
         public static IEnumerable<Precept> GetRemovedPrecepts(Ideo ideo1, Ideo ideo2) => GetAddedPrecepts(ideo2, ideo1);
 
@@ -38,6 +42,8 @@ namespace IdeologyDevelopmentPlus
 
         public static int GetPreceptOrderDifference(Ideo ideo1, Ideo ideo2, IssueDef issue)
         {
+            if (issue.allowMultiplePrecepts)
+                return 0;
             PreceptDef precept1 = ideo1.GetPreceptForIssue(issue);
             PreceptDef precept2 = ideo2.GetPreceptForIssue(issue);
             if (precept1 == null && precept2 == null)
@@ -57,6 +63,28 @@ namespace IdeologyDevelopmentPlus
             int points = BaseReformCost;
             int points2;
             StringBuilder exp = new StringBuilder($"Base: {points.ToStringCached()}");
+
+            if (log)
+            {
+                LogUtility.Log($"Old ideo's precepts:\n{ideo.PreceptsListForReading.Select(p => p.def.defName).ToLineList("- ")}");
+                int totalAdded = 0, totalRemoved = 0;
+                foreach (Precept p in ideo.PreceptsListForReading)
+                {
+                    bool changed = newIdeo.PreceptsListForReading.All(p2 => !p.SametAs(p2));
+                    LogUtility.Log($"- {p.TipLabel} ({p.def.defName}, id {p.Id}){(changed ? " *removed*" : "")}");
+                    if (changed)
+                        totalRemoved++;
+                }
+                LogUtility.Log("New precepts:");
+                foreach (Precept p in newIdeo.PreceptsListForReading)
+                {
+                    bool changed = ideo.PreceptsListForReading.All(p2 => !p.SametAs(p2));
+                    LogUtility.Log($"- {p.TipLabel} ({p.def.defName}, id {p.Id}){(changed ? " *new*" : "")}");
+                    if (changed)
+                        totalAdded++;
+                }
+                LogUtility.Log($"{totalAdded} precepts added, {totalRemoved} removed.");
+            }
 
             IEnumerable<MemeDef> changedMemes = GetAddedMemes(ideo, newIdeo).Union(GetRemovedMemes(ideo, newIdeo));
             if (log && changedMemes.Any())
