@@ -57,34 +57,35 @@ namespace IdeologyDevelopmentPlus
 
         public static string GetFullName(this Precept precept) => $"{precept.LabelCap}: {precept.def.LabelCap}";
 
+        static void LogPrecepts(Ideo ideo, Ideo newIdeo)
+        {
+            StringBuilder str = new StringBuilder("Old ideo's precepts:\n");
+            int totalAdded = 0, totalRemoved = 0;
+            foreach (Precept p in ideo.PreceptsListForReading)
+            {
+                bool changed = newIdeo.PreceptsListForReading.All(p2 => !p.SametAs(p2));
+                str.AppendLine($"- {p.TipLabel} ({p.def.defName}, id {p.Id}){(changed ? " *removed*" : "")}");
+                if (changed)
+                    totalRemoved++;
+            }
+            str.AppendLine("New precepts:");
+            foreach (Precept p in newIdeo.PreceptsListForReading)
+            {
+                bool changed = ideo.PreceptsListForReading.All(p2 => !p.SametAs(p2));
+                str.AppendLine($"- {p.TipLabel} ({p.def.defName}, id {p.Id}){(changed ? " *new*" : "")}");
+                if (changed)
+                    totalAdded++;
+            }
+            str.Append($"{totalAdded} precepts added, {totalRemoved} removed.");
+            LogUtility.Log(str.ToString());
+        }
+
         public static int GetPoints(Ideo ideo, Ideo newIdeo, out string explanation, bool log = true)
         {
             log &= Prefs.DevMode;
             int points = BaseReformCost;
             int points2;
             StringBuilder exp = new StringBuilder($"Base: {points.ToStringCached()}");
-
-            if (log)
-            {
-                LogUtility.Log($"Old ideo's precepts:\n{ideo.PreceptsListForReading.Select(p => p.def.defName).ToLineList("- ")}");
-                int totalAdded = 0, totalRemoved = 0;
-                foreach (Precept p in ideo.PreceptsListForReading)
-                {
-                    bool changed = newIdeo.PreceptsListForReading.All(p2 => !p.SametAs(p2));
-                    LogUtility.Log($"- {p.TipLabel} ({p.def.defName}, id {p.Id}){(changed ? " *removed*" : "")}");
-                    if (changed)
-                        totalRemoved++;
-                }
-                LogUtility.Log("New precepts:");
-                foreach (Precept p in newIdeo.PreceptsListForReading)
-                {
-                    bool changed = ideo.PreceptsListForReading.All(p2 => !p.SametAs(p2));
-                    LogUtility.Log($"- {p.TipLabel} ({p.def.defName}, id {p.Id}){(changed ? " *new*" : "")}");
-                    if (changed)
-                        totalAdded++;
-                }
-                LogUtility.Log($"{totalAdded} precepts added, {totalRemoved} removed.");
-            }
 
             IEnumerable<MemeDef> changedMemes = GetAddedMemes(ideo, newIdeo).Union(GetRemovedMemes(ideo, newIdeo));
             if (log && changedMemes.Any())
@@ -106,6 +107,9 @@ namespace IdeologyDevelopmentPlus
 
             if (!Settings.RandomizePrecepts)
             {
+                if (log)
+                    LogPrecepts(ideo, newIdeo);
+
                 IEnumerable<IssueDef> changedIssues = GetChangedIssues(ideo, newIdeo);
                 foreach (IssueDef issue in changedIssues)
                 {

@@ -1,0 +1,89 @@
+<Patch>
+
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Biotech</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+
+				<!-- Bloodfeeders -->
+
+				<li Class="PatchOperationAddModExtension">
+					<xpath>Defs/PreceptDef[defName="Bloodfeeders_Revered"]</xpath>
+					<value>
+						<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+							<cost>1</cost>
+							<order>-1</order>
+						</li>
+					</value>
+				</li>
+
+				<li Class="PatchOperationAddModExtension">
+					<xpath>Defs/PreceptDef[defName="Bloodfeeders_Reviled"]</xpath>
+					<value>
+						<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+							<cost>-1</cost>
+							<order>1</order>
+						</li>
+					</value>
+				</li>
+
+				<!-- ChildLabor -->
+
+				<li Class="PatchOperationAddModExtension">
+					<xpath>Defs/PreceptDef[defName="ChildLabor_Encouraged"]</xpath>
+					<value>
+						<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+							<cost>1</cost>
+							<order>-1</order>
+						</li>
+					</value>
+				</li>
+
+				<li Class="PatchOperationAddModExtension">
+					<xpath>Defs/PreceptDef[defName="ChildLabor_Disapproved"]</xpath>
+					<value>
+						<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+							<order>1</order>
+						</li>
+					</value>
+				</li>
+
+				<!-- GrowthVat -->
+
+				<li Class="PatchOperationAddModExtension">
+					<xpath>Defs/PreceptDef[defName="GrowthVat_Essential"]</xpath>
+					<value>
+						<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+							<order>-1</order>
+						</li>
+					</value>
+				</li>
+
+				<li Class="PatchOperationAddModExtension">
+					<xpath>Defs/PreceptDef[defName="GrowthVat_Prohibited"]</xpath>
+					<value>
+						<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+							<cost>1</cost>
+							<order>1</order>
+						</li>
+					</value>
+				</li>
+
+				<!-- MechanoidLabor -->
+
+				<li Class="PatchOperationAddModExtension">
+					<xpath>Defs/PreceptDef[defName="MechanoidLabor_Enhanced"]</xpath>
+					<value>
+						<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+							<cost>1</cost>
+						</li>
+					</value>
+				</li>
+
+			</operations>
+		</match>
+	</Operation>
+
+</Patch>

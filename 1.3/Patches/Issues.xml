@@ -13,7 +13,7 @@
         <xpath>Defs/IssueDef[defName="Ritual" or defName="IdeoRole"]/modExtensions/li[@Class="IdeologyDevelopmentPlus.DevelopmentCosts"]</xpath>
         <value>
             <li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
-				<cost>0</cost>
+				<cost>1</cost>
             </li>
         </value>
     </Operation>
