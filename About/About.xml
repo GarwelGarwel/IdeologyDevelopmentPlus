@@ -56,5 +56,6 @@ Github: https://github.com/GarwelGarwel/IdeologyDevelopmentPlus</description>
 		<li>brrainz.harmony</li>
 		<li>Ludeon.RimWorld</li>
 		<li>Ludeon.RimWorld.Ideology</li>
+		<li>Ludeon.RimWorld.Biotech</li>
 	</loadAfter>
 </ModMetaData>
