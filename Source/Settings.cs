@@ -14,6 +14,7 @@ namespace IdeologyDevelopmentPlus
         public static int IssueCost;
         public static int PreceptCost;
         public static bool RandomizePrecepts;
+        public static bool OfferToMakeIdeoFluid;
         public static bool DebugMode = Prefs.LogVerbose;
 
         internal const float DevPointsMultiplier_Default = 2;
@@ -37,6 +38,7 @@ namespace IdeologyDevelopmentPlus
             Scribe_Values.Look(ref IssueCost, "IssueCost", IssueCost_Default);
             Scribe_Values.Look(ref PreceptCost, "PreceptCost", PreceptCost_Default);
             Scribe_Values.Look(ref RandomizePrecepts, "RandomizePrecepts");
+            Scribe_Values.Look(ref OfferToMakeIdeoFluid, "OfferToMakeIdeoFluid", true);
             Scribe_Values.Look(ref DebugMode, "DebugMode");
             if (Scribe.mode == LoadSaveMode.LoadingVars)
                 Print();
@@ -52,6 +54,7 @@ namespace IdeologyDevelopmentPlus
             IssueCost = IssueCost_Default;
             PreceptCost = PreceptCost_Default;
             RandomizePrecepts = false;
+            OfferToMakeIdeoFluid = true;
             Log($"Settings reset.");
             Print();
         }
@@ -68,6 +71,7 @@ namespace IdeologyDevelopmentPlus
             Log($"IssueCost: {IssueCost.ToStringCached()}");
             Log($"PreceptCost: {PreceptCost.ToStringCached()}");
             Log($"RandomizePrecepts: {RandomizePrecepts}");
+            Log($"OfferToMakeIdeoFluid: {OfferToMakeIdeoFluid}");
         }
     }
 }

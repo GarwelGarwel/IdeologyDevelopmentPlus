@@ -75,13 +75,14 @@ namespace IdeologyDevelopmentPlus
             if (ideo != null && !ideo.Fluid)
                 if (Prefs.DevMode)
                     IdeoUtility.MakeIdeoFluid();
-                else Find.WindowStack.Add(new Dialog_MessageBox(
-                    $"Do you want to make {ideo.name.Colorize(ideo.TextColor)} ideoligion fluid to allow its development?",
-                    "OK".Translate(),
-                    IdeoUtility.MakeIdeoFluid,
-                    "Cancel".Translate(),
-                    acceptAction: IdeoUtility.MakeIdeoFluid,
-                    title: Name));
+                else if (Settings.OfferToMakeIdeoFluid)
+                    Find.WindowStack.Add(new Dialog_MessageBox(
+                        $"Do you want to make {ideo.name.Colorize(ideo.TextColor)} ideoligion fluid to allow its development?",
+                        "OK".Translate(),
+                        IdeoUtility.MakeIdeoFluid,
+                        "Cancel".Translate(),
+                        acceptAction: IdeoUtility.MakeIdeoFluid,
+                        title: Name));
         }
 
         #region HARMONY PATCHES

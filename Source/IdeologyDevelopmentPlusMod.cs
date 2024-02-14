@@ -72,6 +72,11 @@ namespace IdeologyDevelopmentPlus
                 "In this mode, you only choose memes when reforming ideoligion. Precepts are randomly generated and can't be directly changed, but they cost no dev points.");
 
             content.CheckboxLabeled(
+                "Offer to make ideoligion fluid",
+                ref OfferToMakeIdeoFluid,
+                "If the current player's ideoligion is not fluid, show a window offering to make it such. ID+ has no effect on non-fluid ideoligions.");
+
+            content.CheckboxLabeled(
                 "Debug mode",
                 ref DebugMode,
                 "Detailed logging, necessary for reporting issues.");
