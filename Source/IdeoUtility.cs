@@ -15,8 +15,16 @@ namespace IdeologyDevelopmentPlus
 
         public static void MakeIdeoFluid() => PlayerIdeo.Fluid = true;
 
+        public static int LikemindedFactionCount => Find.FactionManager.AllFactionsVisible.Count(faction => !faction.IsPlayer && faction.ideos.PrimaryIdeo == PlayerIdeo);
+
+        public static int ReformCountCost => PlayerIdeo.development.reformCount * Settings.ReformCostIncrement;
+
+        public static int BelieverCountCost => (int)(Settings.ReformCostPerBeliever * PlayerIdeo.ColonistBelieverCountCached);
+
+        public static int LikemindedFactionsCost => Settings.ReformCostPerFaction * LikemindedFactionCount;
+
         public static int BaseReformCost =>
-            Math.Min(Settings.ReformCostStart + PlayerIdeo.development.reformCount * Settings.ReformCostIncrement, Settings.ReformCostMax);
+            Math.Min(Settings.ReformCostStart + ReformCountCost + BelieverCountCost + LikemindedFactionsCost, Settings.ReformCostMax);
 
         public static int GetDevPointsCost(this Def def) => def.HasModExtension<DevelopmentCosts>() ? def.GetModExtension<DevelopmentCosts>().cost : 0;
 
@@ -85,7 +93,20 @@ namespace IdeologyDevelopmentPlus
             log &= Prefs.DevMode;
             int points = BaseReformCost;
             int points2;
-            StringBuilder exp = new StringBuilder($"Base: {points.ToStringCached()}");
+            StringBuilder exp = new StringBuilder();
+            if (Settings.ReformCostStart > 0 && points > Settings.ReformCostStart)
+                exp.AppendLine($"Base cost start: {Settings.ReformCostStart.ToStringCached()}");
+            if ((points2 = ReformCountCost) > 0)
+                exp.AppendLine($"Reform count cost: {points2.ToStringCached()} ({PlayerIdeo.development.reformCount.ToStringCached()} previous reforms)");
+            if ((points2 = BelieverCountCost) > 0)
+                exp.AppendLine($"Believer count cost: {points2.ToStringCached()} ({PlayerIdeo.ColonistBelieverCountCached.ToStringCached()} believers)");
+            if ((points2 = LikemindedFactionsCost) > 0)
+                exp.AppendLine($"Likeminded factions cost: {points2.ToStringCached()} ({LikemindedFactionCount.ToStringCached()} factions)");
+            if (points == Settings.ReformCostMax && points > Settings.ReformCostStart)
+                exp.AppendLine($"Base cost capped at {Settings.ReformCostMax.ToStringCached()}");
+            exp.Append($"Base cost: {points.ToStringCached()}");
+            if (points > Settings.ReformCostStart)
+                exp.AppendLine();
 
             IEnumerable<MemeDef> changedMemes = GetAddedMemes(ideo, newIdeo).Union(GetRemovedMemes(ideo, newIdeo));
             if (log && changedMemes.Any())

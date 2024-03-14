@@ -40,16 +40,24 @@ namespace IdeologyDevelopmentPlus
 
             content.Label(
                 $"Base cost increase per reform: {ReformCostIncrement.ToStringCached()}",
-                tooltip: $"Cost of reform is increased by this amount after every reform (default: {ReformCostIncrement_Default.ToStringCached()}).");
+                tooltip: $"Cost of a reform is increased by this amount after every reform (default: {ReformCostIncrement_Default.ToStringCached()}).");
             ReformCostIncrement = (int)content.Slider(ReformCostIncrement, 0, 10);
+
+            content.Label(
+                $"Base cost increase per colonist believer: {ReformCostPerBeliever:F1}",
+                tooltip: $"Cost of a reform is increased with the number of its current believers in the colony (default: {ReformCostPerBeliever_Default:F1}).");
+            ReformCostPerBeliever = Mathf.Round(content.Slider(ReformCostPerBeliever, 0, 5) * 2) / 2;
+
+            content.Label(
+                $"Base cost increase per likeminded faction: {ReformCostPerFaction.ToStringCached()}",
+                tooltip: $"Cost of a reform is increased with the number of foreign factions that follow this ideoligion (default: {ReformCostPerFaction_Default.ToStringCached()}).");
+            ReformCostPerFaction = (int)content.Slider(ReformCostPerFaction, 0, 20);
 
             content.Label(
                 $"Max reform base cost: {ReformCostMax.ToStringCached()}",
                 tooltip: $"Base cost of a reform stops increasing after reaching this value (default: {ReformCostMax_Default.ToStringCached()}).");
-            ReformCostMax = (int)content.Slider(
-                Mathf.Clamp(ReformCostMax, ReformCostStart, ReformCostStart + 10 * ReformCostIncrement),
-                ReformCostStart,
-                ReformCostStart + 10 * ReformCostIncrement);
+            int reformCostTheoreticalMax = ReformCostStart + 10 * ReformCostIncrement + (int)(20 * ReformCostPerBeliever) + 5 * ReformCostPerFaction;
+            ReformCostMax = (int)content.Slider(Mathf.Clamp(ReformCostMax, ReformCostStart, reformCostTheoreticalMax), ReformCostStart, reformCostTheoreticalMax);
 
             content.Label(
                 $"Meme cost per impact: {MemeCostPerImpact.ToStringCached()}",
@@ -57,8 +65,8 @@ namespace IdeologyDevelopmentPlus
             MemeCostPerImpact = (int)content.Slider(MemeCostPerImpact, 0, 10);
 
             content.Label(
-              $"Precept change cost: {IssueCost.ToStringCached()}",
-              tooltip: $"How many dev points shifting a precept by one step costs (default: {IssueCost_Default.ToStringCached()}).");
+                $"Precept change cost: {IssueCost.ToStringCached()}",
+                tooltip: $"How many dev points shifting a precept by one step costs (default: {IssueCost_Default.ToStringCached()}).");
             IssueCost = (int)content.Slider(IssueCost, 0, 10);
 
             content.Label(

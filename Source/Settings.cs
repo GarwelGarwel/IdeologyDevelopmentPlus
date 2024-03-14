@@ -9,6 +9,8 @@ namespace IdeologyDevelopmentPlus
         public static float DevPointsMultiplier;
         public static int ReformCostStart;
         public static int ReformCostIncrement;
+        public static float ReformCostPerBeliever;
+        public static int ReformCostPerFaction;
         public static int ReformCostMax;
         public static int MemeCostPerImpact;
         public static int IssueCost;
@@ -20,6 +22,8 @@ namespace IdeologyDevelopmentPlus
         internal const float DevPointsMultiplier_Default = 2;
         internal const int ReformCostStart_Default = 10;
         internal const int ReformCostIncrement_Default = 2;
+        internal const float ReformCostPerBeliever_Default = 0;
+        internal const int ReformCostPerFaction_Default = 0;
         internal const int ReformCostMax_Default = 20;
         internal const int MemeCostPerImpact_Default = 2;
         internal const int IssueCost_Default = 1;
@@ -33,6 +37,8 @@ namespace IdeologyDevelopmentPlus
             Scribe_Values.Look(ref DevPointsMultiplier, "DevPointsMultiplier", DevPointsMultiplier_Default);
             Scribe_Values.Look(ref ReformCostStart, "ReformCostStart", ReformCostStart_Default);
             Scribe_Values.Look(ref ReformCostIncrement, "ReformCostIncrement", ReformCostIncrement_Default);
+            Scribe_Values.Look(ref ReformCostPerBeliever, "ReformCostPerBeliever", ReformCostPerBeliever_Default);
+            Scribe_Values.Look(ref ReformCostPerBeliever, "ReformCostPerFaction", ReformCostPerFaction_Default);
             Scribe_Values.Look(ref ReformCostMax, "ReformCostMax", ReformCostMax_Default);
             Scribe_Values.Look(ref MemeCostPerImpact, "MemeCostPerImpact", MemeCostPerImpact_Default);
             Scribe_Values.Look(ref IssueCost, "IssueCost", IssueCost_Default);
@@ -49,6 +55,8 @@ namespace IdeologyDevelopmentPlus
             DevPointsMultiplier = DevPointsMultiplier_Default;
             ReformCostStart = ReformCostStart_Default;
             ReformCostIncrement = ReformCostIncrement_Default;
+            ReformCostPerBeliever = ReformCostPerBeliever_Default;
+            ReformCostPerFaction = ReformCostPerFaction_Default;
             ReformCostMax = ReformCostMax_Default;
             MemeCostPerImpact = MemeCostPerImpact_Default;
             IssueCost = IssueCost_Default;
@@ -66,6 +74,8 @@ namespace IdeologyDevelopmentPlus
             Log($"DevPointsMultiplier: {DevPointsMultiplier.ToStringPercent()}");
             Log($"ReformCostStart: {ReformCostStart.ToStringCached()}");
             Log($"ReformCostIncrement: {ReformCostIncrement.ToStringCached()}");
+            Log($"ReformCostPerBeliever: {ReformCostPerBeliever:F1}");
+            Log($"ReformCostPerFaction: {ReformCostPerFaction.ToStringCached()}");
             Log($"ReformCostMax: {ReformCostMax.ToStringCached()}");
             Log($"MemeCostPerImpact: {MemeCostPerImpact.ToStringCached()}");
             Log($"IssueCost: {IssueCost.ToStringCached()}");

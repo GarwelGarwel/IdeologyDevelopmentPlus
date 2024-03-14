@@ -45,7 +45,7 @@ namespace IdeologyDevelopmentPlus
                         LogPatchError($"{className}.{methodName}");
                 }
                 catch (Exception ex)
-                { LogUtility.Log($"Exception while patching {className}.{methodName}: {ex}"); }
+                { LogPatchError($"{className}.{methodName} ({ex})"); }
             }
 
             Patch("IdeoDevelopmentUtility", "ConfirmChangesToIdeo");
