@@ -1,0 +1,310 @@
+<Patch>
+
+	<!-- Vanilla Vehicles Expanded -->
+	
+	<!-- VVE_Acceleration -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Acceleration_Standard"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<order>0</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Acceleration_SundayDriver"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-1</cost>
+				<order>-1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Acceleration_High"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+				<order>1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- VVE_Driving -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Driving_Forbidden"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-2</cost>
+				<order>-2</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Driving_Horrible"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-1</cost>
+				<order>-1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Driving_Allowed"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>0</cost>
+				<order>0</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Driving_Approved"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+				<order>1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Driving_Required"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-1</cost>
+				<order>2</order>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- VVE_Flying -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Flying_Forbidden"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-2</cost>
+				<order>-2</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Flying_Horrible"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-1</cost>
+				<order>-1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Flying_Allowed"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>0</cost>
+				<order>0</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Flying_Approved"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+				<order>1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Flying_Required"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-1</cost>
+				<order>2</order>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- VVE_Sailing -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Sailing_Forbidden"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-2</cost>
+				<order>-2</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Sailing_Horrible"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-1</cost>
+				<order>-1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Sailing_Allowed"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>0</cost>
+				<order>0</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Sailing_Approved"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+				<order>1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_Sailing_Required"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-1</cost>
+				<order>2</order>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- VVE_FuelEfficiency -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_FuelEfficiency_Standard"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<order>0</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_FuelEfficiency_Inefficient"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-1</cost>
+				<order>-1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_FuelEfficiency_Efficient"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+				<order>1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- VVE_VehicleRepairs -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_VehicleRepairs_Standard"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<order>0</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_VehicleRepairs_Slow"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-1</cost>
+				<order>-1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_VehicleRepairs_Fast"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+				<order>1</order>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- Single precepts -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_ImpactDamage_High"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_MaxSpeed_Increased"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+			</li>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationAddModExtension">
+		<success>Always</success>
+		<xpath>Defs/PreceptDef[defName="VVE_SmallSpaces_Horrible"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>-1</cost>
+			</li>
+		</value>
+	</Operation>
+
+</Patch>

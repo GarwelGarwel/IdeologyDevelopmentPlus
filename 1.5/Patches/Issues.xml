@@ -1,0 +1,12 @@
+<Patch>
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>Defs/IssueDef</xpath>
+        <value>
+            <li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>1</cost>
+            </li>
+        </value>
+    </Operation>
+
+</Patch>
