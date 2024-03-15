@@ -15,7 +15,7 @@ namespace IdeologyDevelopmentPlus
 
         public static void MakeIdeoFluid() => PlayerIdeo.Fluid = true;
 
-        public static int LikemindedFactionCount => Find.FactionManager.AllFactionsVisible.Count(faction => !faction.IsPlayer && faction.ideos.PrimaryIdeo == PlayerIdeo);
+        public static int LikemindedFactionCount => Find.FactionManager.AllFactionsVisible.Count(faction => faction?.ideos?.PrimaryIdeo != null && !faction.IsPlayer && faction.ideos.PrimaryIdeo == PlayerIdeo);
 
         public static int ReformCountCost => PlayerIdeo.development.reformCount * Settings.ReformCostIncrement;
 
