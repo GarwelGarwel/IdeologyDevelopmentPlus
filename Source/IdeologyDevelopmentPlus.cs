@@ -52,6 +52,7 @@ namespace IdeologyDevelopmentPlus
             Patch("IdeoDevelopmentTracker", "TryAddDevelopmentPoints");
             Patch("IdeoDevelopmentTracker", "ResetDevelopmentPoints");
             Patch("Dialog_ReformIdeo", "DoWindowContents", false, true);
+            Patch("IdeoUIUtility", "DoFactions", false, true);
             if (harmony.Patch(
                 AccessTools.Method("RimWorld.RitualOutcomeEffectWorker_FromQuality:ApplyDevelopmentPoints"),
                 prefix: new HarmonyMethod(type.GetMethod("RitualOutcomeEffectWorker_FromQuality_ApplyDevelopmentPoints_Prefix")),
@@ -72,17 +73,14 @@ namespace IdeologyDevelopmentPlus
             if (harmony == null)
                 return;
             Ideo ideo = IdeoUtility.PlayerIdeo;
-            if (ideo != null && !ideo.Fluid)
-                if (Prefs.DevMode)
-                    IdeoUtility.MakeIdeoFluid();
-                else if (Settings.OfferToMakeIdeoFluid)
-                    Find.WindowStack.Add(new Dialog_MessageBox(
-                        $"Do you want to make {ideo.name.Colorize(ideo.TextColor)} ideoligion fluid to allow its development?",
-                        "OK".Translate(),
-                        IdeoUtility.MakeIdeoFluid,
-                        "Cancel".Translate(),
-                        acceptAction: IdeoUtility.MakeIdeoFluid,
-                        title: Name));
+            if (ideo != null && !ideo.Fluid && Settings.OfferToMakeIdeoFluid)
+                Find.WindowStack.Add(new Dialog_MessageBox(
+                    $"Do you want to make {ideo.name.Colorize(ideo.TextColor)} ideoligion fluid to allow its development?",
+                    "OK".Translate(),
+                    IdeoUtility.MakeIdeoFluid,
+                    "Cancel".Translate(),
+                    acceptAction: IdeoUtility.MakeIdeoFluid,
+                    title: Name));
         }
 
         #region HARMONY PATCHES
@@ -193,6 +191,21 @@ namespace IdeologyDevelopmentPlus
             {
                 LogUtility.Log($"Resetting the ideo.");
                 ___ideo.CopyTo(___newIdeo);
+            }
+        }
+
+        /// <summary>
+        /// Displays "Make Fluid" button in ideoligions list
+        /// </summary>
+        public static void IdeoUIUtility_DoFactions(ref float curY, float width, Ideo ideo, IdeoEditMode editMode)
+        {
+            if (!ideo.Fluid)
+            {
+                if (curY < 50)
+                    curY += 69;
+                Rect rect = new Rect((width - IdeoUIUtility.PreceptBoxSize.x * 3 - 16) / 2, curY + 12, 100, 25);
+                if (Widgets.ButtonText(rect, "Make Fluid"))
+                    ideo.Fluid = true;
             }
         }
 
