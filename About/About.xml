@@ -14,31 +14,29 @@
 	
 A reform now requires varying amount of development points, determined by what you change. The cost consists of the following parts:
 
-- Base reform cost, which increases with every reform until it reaches a ceiling. By default, it goes from 10 to 20 dev points.
+- Base reform cost, which is based on the number of followers of this ideoligion, number of like-minded factions and the number of previous reforms. The formula is configurable.
 
-- Cost of added and removed memes, scaled with their impact (2 to 6 points). Structure and style are free.
+- Cost of added and removed memes, scaled with their impact. Structure and style memes are free.
 
-- Changing precepts costs normally 1 point per precept, but it increases for spectrum-like precepts (such as number of spouses) when you want to jump several steps at a time (e.g. from having 1 spouse to having 4).
+- Cost of changed precepts. The more beneficial precept you choose, the higher the cost. You may also go for a worse precept and get back a point or two.
 
-- Adding or removing certain precepts that have a serious gameplay impact may cost or reimburse dev points. E.g. adopting Very Fast Research will cost you 4 more points; adopting Very Slow Research will give you 4 dev points.
+- For spectrum precepts, jumping several steps at a time costs more than gradual changes.
 
 Notes:
 
+- You can now make any ideoligion fluid. Yes, even those of other factions! Of course, to actually change them, you'll need to get some development points. The game will also offer you to make your player ideoligion fluid, if you forgot to do it.
+
 - Acquisition of development points is doubled (by default). So when the game says you will receive 2 dev points for a ritual, you will actually get 4, and so on.
 
-- Dev point cap is removed (i.e. you can accumulate as many dev points as you want)
+- Dev point cap is removed (i.e. you can accumulate as many dev points as you want).
 
-- In Surprise Precepts Mode (enable in mod settings), you only choose memes (and also culture) and precepts are randomly auto-generated. You can't preview or change them, but they are free
+- In Surprise Precepts Mode (enable in mod settings), you only choose memes (and also culture) and precepts are randomly auto-generated. You can't preview or change them, but they are free.
 
-- Can be added to an ongoing game, even if your ideoligion is not fluid (you will be offered to make it such). Removing it mid-game will cause a one-time harmless error message
-
-- Most values can be tweaked to your liking
+- Most values can be tweaked to your liking.
 
 Obviously, Ideology DLC is required. So is Harmony.
 
-Should be compatible with most mods except those that also change the ideo development. May need additional patches for better balancing custom precepts.
-
-Let me know if you think the balance is off somewhere.
+Should be compatible with most mods except those that also change the ideo development. May need additional patches for better balancing custom precepts. Patches for ideoligions from Biotech and Vanilla Vehicles Expanded are included.
 
 Github: https://github.com/GarwelGarwel/IdeologyDevelopmentPlus</description>
 	<modDependencies>
