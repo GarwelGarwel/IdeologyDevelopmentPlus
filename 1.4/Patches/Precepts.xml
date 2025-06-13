@@ -468,17 +468,6 @@
 		</value>
 	</Operation>
 
-	<!-- Indoors (RimWorld 1.6+) -->
-
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>Defs/PreceptDef[defName="Indoors_Acceptable"]</xpath>
-		<value>
-			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
-				<cost>2</cost>
-			</li>
-		</value>
-	</Operation>
-
 	<!-- InsectMeat -->
 
 	<Operation Class="PatchOperationAddModExtension">
@@ -1191,6 +1180,17 @@
 		<value>
 			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
 				<order>5</order>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- SmallSpaces -->
+
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>Defs/PreceptDef[defName="SmallSpaces_Acceptable"]</xpath>
+		<value>
+			<li Class="IdeologyDevelopmentPlus.DevelopmentCosts">
+				<cost>2</cost>
 			</li>
 		</value>
 	</Operation>
