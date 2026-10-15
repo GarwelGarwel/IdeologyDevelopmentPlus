@@ -26,11 +26,13 @@ namespace IdeologyDevelopmentPlus
         public static int BaseReformCost =>
             Math.Min(Settings.ReformCostStart + ReformCountCost + BelieverCountCost + LikemindedFactionsCost, Settings.ReformCostMax);
 
-        public static int GetDevPointsCost(this Def def) => def.HasModExtension<DevelopmentCosts>() ? def.GetModExtension<DevelopmentCosts>().cost : 0;
+        public static int GetDevPointsCost(this Def def) => def.GetModExtension<DevelopmentCosts>()?.cost ?? 0;
 
-        public static int GetPreceptOrder(this PreceptDef def) => def.HasModExtension<DevelopmentCosts>() ? def.GetModExtension<DevelopmentCosts>().order : 0;
+        public static int GetDevPointsCost(this IssueDef def) => def.GetModExtension<DevelopmentCosts>()?.cost ?? 1;
 
-        public static bool SametAs(this Precept precept1, Precept precept2) =>
+        public static int GetPreceptOrder(this PreceptDef def) => def.GetModExtension<DevelopmentCosts>()?.order ?? 0;
+
+        public static bool SameAs(this Precept precept1, Precept precept2) =>
             precept1.Id == precept2.Id || (!precept1.def.issue.allowMultiplePrecepts && precept1.def == precept2.def);
 
         public static IEnumerable<MemeDef> GetAddedMemes(Ideo ideo1, Ideo ideo2) => ideo2.memes.Where(meme => !ideo1.memes.Contains(meme));
@@ -38,7 +40,7 @@ namespace IdeologyDevelopmentPlus
         public static IEnumerable<MemeDef> GetRemovedMemes(Ideo ideo1, Ideo ideo2) => GetAddedMemes(ideo2, ideo1);
 
         public static IEnumerable<Precept> GetAddedPrecepts(Ideo ideo1, Ideo ideo2) =>
-            ideo2.PreceptsListForReading.Where(precept => ideo1.PreceptsListForReading.All(precept2 => !precept.SametAs(precept2)));
+            ideo2.PreceptsListForReading.Where(precept => ideo1.PreceptsListForReading.All(precept2 => !precept.SameAs(precept2)));
 
         public static IEnumerable<Precept> GetRemovedPrecepts(Ideo ideo1, Ideo ideo2) => GetAddedPrecepts(ideo2, ideo1);
 
@@ -71,7 +73,7 @@ namespace IdeologyDevelopmentPlus
             int totalAdded = 0, totalRemoved = 0;
             foreach (Precept p in ideo.PreceptsListForReading)
             {
-                bool changed = newIdeo.PreceptsListForReading.All(p2 => !p.SametAs(p2));
+                bool changed = newIdeo.PreceptsListForReading.All(p2 => !p.SameAs(p2));
                 str.AppendLine($"- {p.TipLabel} ({p.def.defName}, id {p.Id}){(changed ? " *removed*" : "")}");
                 if (changed)
                     totalRemoved++;
@@ -79,7 +81,7 @@ namespace IdeologyDevelopmentPlus
             str.AppendLine("New precepts:");
             foreach (Precept p in newIdeo.PreceptsListForReading)
             {
-                bool changed = ideo.PreceptsListForReading.All(p2 => !p.SametAs(p2));
+                bool changed = ideo.PreceptsListForReading.All(p2 => !p.SameAs(p2));
                 str.AppendLine($"- {p.TipLabel} ({p.def.defName}, id {p.Id}){(changed ? " *new*" : "")}");
                 if (changed)
                     totalAdded++;

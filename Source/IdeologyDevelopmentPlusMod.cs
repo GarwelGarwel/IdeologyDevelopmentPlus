@@ -65,14 +65,14 @@ namespace IdeologyDevelopmentPlus
             MemeCostPerImpact = (int)content.Slider(MemeCostPerImpact, 0, 10);
 
             content.Label(
-                $"Precept change cost: {IssueCost.ToStringCached()}",
-                tooltip: $"How many dev points shifting a precept by one step costs (default: {IssueCost_Default.ToStringCached()}).");
-            IssueCost = (int)content.Slider(IssueCost, 0, 10);
-
-            content.Label(
                 $"Precept cost per impact: {PreceptCost.ToStringCached()}",
                 tooltip: $"How many dev points adding or removing a precept costs, scaled with precept's gameplay impact (default: {PreceptCost_Default.ToStringCached()}).");
             PreceptCost = (int)content.Slider(PreceptCost, 0, 10);
+
+            content.Label(
+                $"Precept change cost: {IssueCost.ToStringCached()}",
+                tooltip: $"How many dev points shifting a precept by one step costs (default: {IssueCost_Default.ToStringCached()}).");
+            IssueCost = (int)content.Slider(IssueCost, 0, 10);
 
             content.CheckboxLabeled(
                 "Surprise precepts mode",
